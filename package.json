@@ -1,0 +1,23 @@
+{
+  "name": "realms-end",
+  "version": "0.0.1",
+  "description": "A 2D browser based RPG.",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wtaylor45/realms-end.git"
+  },
+  "author": "Will Taylor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wtaylor45/realms-end/issues"
+  },
+  "homepage": "https://github.com/wtaylor45/realms-end#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
