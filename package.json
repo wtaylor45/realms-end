@@ -4,7 +4,7 @@
   "description": "A 2D browser based RPG.",
   "main": "main.js",
   "scripts": {
-    "test": "test"
+    "test": "node ."
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/wtaylor45/realms-end#readme",
   "dependencies": {
+    "bison": "^1.1.1",
     "express": "^4.16.2",
-    "socket.io": "^2.0.4"
+    "js-logger": "^1.4.1",
+    "socket.io": "^2.0.4",
+    "underscore": "^1.8.3",
+    "uuid": "^3.1.0"
   }
 }
