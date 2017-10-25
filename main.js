@@ -4,7 +4,8 @@
 
  var fs = require('fs'),
      Logger = require('js-logger'),
-     _ = require('underscore');
+     _ = require('underscore'),
+     DB = require('./server/js/db')
 
 function main(options){
     // File server variables
@@ -16,6 +17,11 @@ function main(options){
     var world = require('./server/js/world');
     var worlds = []; // List of all active worlds
     var uuidV1 = require('uuid/v1');
+    var CONNECTIONS = [];
+
+    DB.init(options.dbURL);
+
+    console.log(DB.queryTable("re_user", {"username": {"$eq": "test"}}));
 
     const PORT = options.port || 2000; // the port the local server will run on 
 
@@ -58,6 +64,7 @@ function main(options){
     /*        GAME SERVER        */
     /*****************************/
 
+    Logger.info('-----------------------');
     Logger.info('Starting game server...');
     Logger.time('Game server startup time');
 
@@ -65,7 +72,12 @@ function main(options){
         var world = _.detect(worlds, function(world){
             return world.playerCount < world.maxPlayers;
         });
-        world.connectPlayer();
+
+        if(!world){
+            Logger.info("All worlds currently full.");
+        }else{
+            world.connectPlayer(new Player(connection, world));            
+        }
     });
 
     _.each(_.range(options.numWorlds), function(i){
@@ -74,6 +86,7 @@ function main(options){
     });
 
     Logger.timeEnd('Game server startup time');
+    Logger.info('-----------------------');
 }
 
 function getConfig(path, callback){
