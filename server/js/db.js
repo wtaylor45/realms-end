@@ -22,10 +22,14 @@ DB.writeToTable = function(table, values){
     });
 }
 
-DB.queryTable = function(table, query){
+DB.queryTable = function(table, query, callback){
     var collection = database.collection(table);
     var result;
     var cursor;
+
+    if(!callback){
+        throw "Cannot return results without callback function.";
+    }
 
     if(!collection){
         Logger.error("[queryTable] Table", table, "not found.");
@@ -34,10 +38,7 @@ DB.queryTable = function(table, query){
 
     cursor = collection.find({});
 
-    cursor.toArray(function(err, documents){
-        result = documents.length;
-        return result;
-    });
+    cursor.toArray(callback);
 }
 
 module.exports = DB;

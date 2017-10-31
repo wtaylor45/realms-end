@@ -21,8 +21,6 @@ function main(options){
 
     DB.init(options.dbURL);
 
-    console.log(DB.queryTable("re_user", {"username": {"$eq": "test"}}));
-
     const PORT = options.port || 2000; // the port the local server will run on 
 
     Logger.useDefaults();
@@ -52,7 +50,7 @@ function main(options){
     /*****************************/
 
     app.get('/', function(req, res){
-        res.sendFile(__dirname + '/client/index.html');
+        res.sendFile(__dirname + '/client/views/index.html');
     });
     app.use('/client', express.static(__dirname + '/client'));
 

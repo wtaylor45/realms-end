@@ -18,6 +18,9 @@
   "homepage": "https://github.com/wtaylor45/realms-end#readme",
   "dependencies": {
     "bison": "^1.1.1",
+    "bootstrap": "^3.3.7",
+    "browserify": "^14.5.0",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
     "js-logger": "^1.4.1",
     "mongojs": "^2.4.1",
