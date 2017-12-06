@@ -7,6 +7,10 @@ var database;
 
 DB.init = function(url){
     database = mongojs(url);
+
+    if(!database){
+        throw "Could not establish connection with the database."
+    }
 }
 
 DB.writeToTable = function(table, values){

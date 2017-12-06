@@ -1,9 +1,7 @@
 var _ = require('underscore'),
-    io = require('socket.io-client')
+    Socket = require('./socket'),
+    Login = require('./login');
 
-var Main = {};
-
-Main.init = function(){
-
-}
-
+;(function(){
+    Login.init();
+}())

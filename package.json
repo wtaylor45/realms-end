@@ -4,7 +4,7 @@
   "description": "A 2D browser based RPG.",
   "main": "main.js",
   "scripts": {
-    "test": "node ."
+    "start": "browserify client/js/main.js -o client/js/client.js && node ."
   },
   "repository": {
     "type": "git",

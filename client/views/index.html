@@ -3,21 +3,24 @@
     <script src="/client/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/client/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/client/node_modules/socket.io-client/dist/socket.io.slim.js"></script>
+    <script src="/client/js/client.js"></script>   
     <link rel="stylesheet" href="/client/css/signin.css"/>    
     <link rel="stylesheet" href="/client/node_modules/bootstrap/dist/css/bootstrap.css"/>
 </head>
-<div id="startDiv" class="container">
-        <div id="header-content">
-            <h1>Realm's End</h1>
+<body>
+    <div id="startDiv" class="container">
+            <div id="header-content">
+                <h1>Realm's End</h1>
+            </div>
+        <div class="signin" class="col-md-6">
+            <h1>Sign In</h1>
+            <form id="signin">
+                <label>Username:</label>
+                <input type="text" id="username"><br>
+                <label>Password:</label>
+                <input type="password" id="password"><br>
+                <button class="btn btn-md btn-primary">Sign In</button>
+            </form>
         </div>
-    <div id="signin" class="col-md-6">
-        <h1>Sign In</h1>
-        <form>
-            Username:</br>
-            <input type="text" id="username"><br>
-            Password:<br>
-            <input type="password" id="pass"><br>
-            <button class="btn btn-md btn-primary" type="Submit">Sign In</button>
-        </form>
     </div>
-</div>
+</body>
