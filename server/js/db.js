@@ -11,6 +11,8 @@ DB.init = function(url){
     if(!database){
         throw "Could not establish connection with the database."
     }
+
+    Logger.info("Connected to database...");
 }
 
 DB.writeToTable = function(table, values){

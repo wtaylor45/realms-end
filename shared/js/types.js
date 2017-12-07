@@ -1,4 +1,4 @@
-var Types = {
+module.exports = Types = {
     Messages: {
         LOGIN: 0
     }

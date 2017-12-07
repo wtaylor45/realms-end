@@ -5,21 +5,20 @@ var Login = {};
 
 Login.init = function(){
     $('#signin').submit(function(e){
-        console.log(':)')
         e.preventDefault();
-        console.log('Sign in?')
         Login.in();
         return false;
     });
 }
 
 Login.in = function(){
-    var username = $('#username').value,
-        password = $('#password').value
+    var username = $('#username').val(),
+        password = $('#password').val()
     var data = {
         "username": username,
         "password": password
     }
+    console.debug('Attemption to login user',username,'...');
 
     Socket.emit(Types.Messages.LOGIN, data);
 }
