@@ -37,6 +37,8 @@ module.exports = World = class World{
                 Logger.info(self.id, "capacity:",
                     self.playerCount+"/"+self.maxPlayers);
             });
+
+            self.outgoingMessages[player.id] = {};
         });
     }
 

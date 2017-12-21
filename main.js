@@ -5,7 +5,8 @@
  var fs = require('fs'),
      Logger = require('js-logger'),
      _ = require('underscore'),
-     DB = require('./server/js/db')
+     DB = require('./server/js/db'),
+     Types = require('./shared/js/types')
 
 function main(options){
     // File server variables
@@ -67,15 +68,31 @@ function main(options){
     Logger.time('Game server startup time');
 
     io.sockets.on('connection', function(connection){
-        var world = _.detect(worlds, function(world){
-            return world.playerCount < world.maxPlayers;
-        });
+        CONNECTIONS.push(connection);
 
-        if(!world){
-            Logger.info("All worlds currently full.");
-        }else{
-            world.connectPlayer(new Player(connection, world));            
-        }
+        connection.on(Types.Messages.LOGIN, function(data){
+            validateCredentials(data.username, data.password, function(results){
+                Logger.debug(results)
+                if(!results || results.length == 0){
+                    Logger.log('No account with credentials found.');
+                    connection.emit(Types.Messages.LOGIN, {success: false});
+                    return;
+                } 
+
+                Logger.info('Valid login info');
+                var world = _.detect(worlds, function(world){
+                    return world.playerCount < world.maxPlayers;
+                });
+        
+                if(!world){
+                    Logger.info("All worlds currently full.");
+                }else{
+                    world.connectPlayer(new Player(connection, world));            
+                }
+
+                connection.emit(Types.Messages.LOGIN, {success: true});
+            })
+        });
     });
 
     _.each(_.range(options.numWorlds), function(i){
@@ -97,6 +114,12 @@ function getConfig(path, callback){
             callback(json);
         }
     })
+}
+
+function validateCredentials(username, password, callback){
+    if(!DB) throw "No connection to database currently.";
+    
+    DB.queryTable("re_users", {"username": username, "password": password}, callback);
 }
 
 var configPath = "./server/config.json";

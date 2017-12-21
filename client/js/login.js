@@ -9,6 +9,12 @@ Login.init = function(){
         Login.in();
         return false;
     });
+
+    Socket.on(Types.Messages.LOGIN, function(data){
+        $('#logging-in').addClass('hidden');
+        console.log(data)
+        if(!data.success) $('#login-failed').removeClass('hidden');
+    });
 }
 
 Login.in = function(){
@@ -18,9 +24,11 @@ Login.in = function(){
         "username": username,
         "password": password
     }
-    console.debug('Attemption to login user',username,'...');
 
     Socket.emit(Types.Messages.LOGIN, data);
+
+    $('#login-failed').addClass('hidden');
+    $('#logging-in').removeClass('hidden');
 }
 
 module.exports = Login;

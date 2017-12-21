@@ -6,13 +6,14 @@ var DB = {};
 var database;
 
 DB.init = function(url){
+    console.log('Connecting to DB')
     database = mongojs(url);
 
     if(!database){
         throw "Could not establish connection with the database."
     }
 
-    Logger.info("Connected to database...");
+    console.log("Connected to database...");
 }
 
 DB.writeToTable = function(table, values){
@@ -31,20 +32,19 @@ DB.writeToTable = function(table, values){
 DB.queryTable = function(table, query, callback){
     var collection = database.collection(table);
     var result;
-    var cursor;
 
     if(!callback){
         throw "Cannot return results without callback function.";
     }
 
     if(!collection){
-        Logger.error("[queryTable] Table", table, "not found.");
+        console.error("[queryTable] Table", table, "not found.");
         return;
     }
-
-    cursor = collection.find({});
-
-    cursor.toArray(callback);
+    
+    collection.find(query, function(err, docs){
+        callback(docs);
+    })
 }
 
 module.exports = DB;

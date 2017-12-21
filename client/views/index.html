@@ -1,26 +1,102 @@
 <!DOCTYPE html>
+
 <head>
     <script src="/client/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/client/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/client/node_modules/socket.io-client/dist/socket.io.slim.js"></script>
-    <script src="/client/js/client.js"></script>   
-    <link rel="stylesheet" href="/client/css/signin.css"/>    
-    <link rel="stylesheet" href="/client/node_modules/bootstrap/dist/css/bootstrap.css"/>
+    <script src="/client/js/client.js"></script>
+    <img src="../assets/img/sign-bg.jpg">
+    <link rel="stylesheet" href="/client/css/signin.css" />
+    <link rel="stylesheet" href="/client/css/style.scss" />
+    <link rel="stylesheet" href="/client/node_modules/bootstrap/dist/css/bootstrap.css" />
 </head>
+
 <body>
     <div id="startDiv" class="container">
-            <div id="header-content">
-                <h1>Realm's End</h1>
-            </div>
-        <div class="signin" class="col-md-6">
-            <h1>Sign In</h1>
-            <form id="signin">
-                <label>Username:</label>
-                <input type="text" id="username"><br>
-                <label>Password:</label>
-                <input type="password" id="password"><br>
-                <button class="btn btn-md btn-primary" type="submit">Sign In</button>
-            </form>
+        <div id="header-content">
+            <h1>Realm's End</h1>
         </div>
+        <div class="form">
+
+            <ul class="tab-group">
+                <li class="tab active"><a href="#signup">Sign Up</a></li>
+                <li class="tab"><a href="#login">Log In</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="signup">
+                    <h1>Sign Up</h1>
+
+                    <form id="sign-up">
+
+                        <div class="top-row">
+                            <div class="field-wrap">
+                                <label>
+                          First Name<span class="req">*</span>
+                        </label>
+                                <input type="text" required autocomplete="off" />
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                          Last Name<span class="req">*</span>
+                        </label>
+                                <input type="text" required autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="field-wrap">
+                            <label>
+                        Email Address<span class="req">*</span>
+                      </label>
+                            <input type="email" required autocomplete="off" />
+                        </div>
+
+                        <div class="field-wrap">
+                            <label>
+                        Set A Password<span class="req">*</span>
+                      </label>
+                            <input type="password" required autocomplete="off" />
+                        </div>
+
+                        <button type="submit" class="button button-block" />Get Started</button>
+
+                    </form>
+
+                </div>
+
+                <div id="login">
+                    <h1>Welcome Back!</h1>
+
+                    <form id="sign-in">
+
+                        <div class="field-wrap">
+                            <label>
+                        Email Address<span class="req">*</span>
+                      </label>
+                            <input type="email" required autocomplete="off" />
+                        </div>
+
+                        <div class="field-wrap">
+                            <label>
+                        Password<span class="req">*</span>
+                      </label>
+                            <input type="password" required autocomplete="off" />
+                        </div>
+
+                        <p class="forgot"><a href="#">Forgot Password?</a></p>
+
+                        <button class="button button-block" />Log In</button>
+
+                    </form>
+
+                </div>
+
+            </div>
+            <!-- tab-content -->
+
+        </div>
+        <!-- /form -->
+    </div>
     </div>
 </body>
