@@ -1,102 +1,76 @@
 <!DOCTYPE html>
-
+<html>
 <head>
     <script src="/client/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/client/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/client/node_modules/socket.io-client/dist/socket.io.slim.js"></script>
     <script src="/client/js/client.js"></script>
-    <img src="../assets/img/sign-bg.jpg">
-    <link rel="stylesheet" href="/client/css/signin.css" />
-    <link rel="stylesheet" href="/client/css/style.scss" />
+    <link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
     <link rel="stylesheet" href="/client/node_modules/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/client/css/signin.css" />
 </head>
-
 <body>
     <div id="startDiv" class="container">
-        <div id="header-content">
-            <h1>Realm's End</h1>
-        </div>
-        <div class="form">
-
-            <ul class="tab-group">
-                <li class="tab active"><a href="#signup">Sign Up</a></li>
-                <li class="tab"><a href="#login">Log In</a></li>
-            </ul>
-
-            <div class="tab-content">
-                <div id="signup">
-                    <h1>Sign Up</h1>
-
-                    <form id="sign-up">
-
-                        <div class="top-row">
-                            <div class="field-wrap">
-                                <label>
-                          First Name<span class="req">*</span>
-                        </label>
-                                <input type="text" required autocomplete="off" />
-                            </div>
-
-                            <div class="field-wrap">
-                                <label>
-                          Last Name<span class="req">*</span>
-                        </label>
-                                <input type="text" required autocomplete="off" />
-                            </div>
-                        </div>
-
-                        <div class="field-wrap">
-                            <label>
-                        Email Address<span class="req">*</span>
-                      </label>
-                            <input type="email" required autocomplete="off" />
-                        </div>
-
-                        <div class="field-wrap">
-                            <label>
-                        Set A Password<span class="req">*</span>
-                      </label>
-                            <input type="password" required autocomplete="off" />
-                        </div>
-
-                        <button type="submit" class="button button-block" />Get Started</button>
-
-                    </form>
-
+        <div class="row main">
+            <div class="panel-heading">
+                <div class="panel-title text-center">
+                    <h1 class="title">Realm's End</h1>
+                    <hr/>
                 </div>
-
-                <div id="login">
-                    <h1>Welcome Back!</h1>
-
-                    <form id="sign-in">
-
-                        <div class="field-wrap">
-                            <label>
-                        Email Address<span class="req">*</span>
-                      </label>
-                            <input type="email" required autocomplete="off" />
-                        </div>
-
-                        <div class="field-wrap">
-                            <label>
-                        Password<span class="req">*</span>
-                      </label>
-                            <input type="password" required autocomplete="off" />
-                        </div>
-
-                        <p class="forgot"><a href="#">Forgot Password?</a></p>
-
-                        <button class="button button-block" />Log In</button>
-
-                    </form>
-
+            </div> 
+            <div class="main-login main-center">
+                <div class="tab cols-sm-10">
+                    <button id="show-login" value="login">Log in</button>
+                    <button id="show-register" value="register">Register</button>
                 </div>
-
+                <form id="register" class="form-horizontal" action="#">
+                    <div class="form-group">
+                        <label for="register-username" class="cols-sm-2 control-label">Username</label>
+                        <div class="cols-sm-10">
+                            <input type="text" class="form-control" name="name" id="register-name"  placeholder="Enter a username..."/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="cols-sm-2 control-label">Email</label>
+                        <div class="cols-sm-10">
+                            <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your email..."/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password" class="cols-sm-2 control-label">Password</label>
+                        <div class="cols-sm-10">
+                            <input type="password" class="form-control" name="password" id="register-password"  placeholder="Enter your password..."/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm" class="cols-sm-2 control-label">Confirm Password</label>
+                        <div class="cols-sm-10">
+                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your password..."/>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <button type="button" class="btn btn-primary btn-lg btn-block login-button">Register</button>
+                    </div>
+                </form>
+                <form id="login" class="form-horizontal" action="#">
+                    <div class="form-group">
+                        <label for="login-username" class="cols-sm-2 control-label">Username</label>
+                        <div class="cols-sm-10">
+                            <input type="text" class="form-control" name="name" id="login-username"  placeholder="Enter a username..."/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password" class="cols-sm-2 control-label">Password</label>
+                        <div class="cols-sm-10">
+                            <input type="password" class="form-control" name="password" id="login-password"  placeholder="Enter your password..."/>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <button type="button" class="btn btn-primary btn-lg btn-block login-button">Login</button>
+                    </div>
+                </form>
             </div>
-            <!-- tab-content -->
-
         </div>
-        <!-- /form -->
-    </div>
     </div>
 </body>
+</html>

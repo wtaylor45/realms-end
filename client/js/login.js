@@ -4,11 +4,25 @@ var Socket = require('./socket'),
 var Login = {};
 
 Login.init = function(){
-    $('#signin').submit(function(e){
+    $('#login').submit(function(e){
         e.preventDefault();
         Login.in();
         return false;
-    });
+    })
+
+    $('#show-login').click(function(e){
+        e.preventDefault();
+        Login.showForm('login');
+        return false;
+    })
+
+    $('#show-register').click(function(e){
+        e.preventDefault();
+        Login.showForm('register');
+        return false;
+    })
+
+    $('#show-login').click()
 
     Socket.on(Types.Messages.LOGIN, function(data){
         $('#logging-in').addClass('hidden');
@@ -18,8 +32,8 @@ Login.init = function(){
 }
 
 Login.in = function(){
-    var username = $('#username').val(),
-        password = $('#password').val()
+    var username = $('#login-username').val(),
+        password = $('#login-password').val()
     var data = {
         "username": username,
         "password": password
@@ -29,6 +43,26 @@ Login.in = function(){
 
     $('#login-failed').addClass('hidden');
     $('#logging-in').removeClass('hidden');
+}
+
+Login.showForm = function(form){
+    if(!$('#show-'+form).hasClass('active')){
+        $('#show-'+form).addClass('active');
+    }
+    switch(form){
+        case 'login':
+            $('#login').show();
+            $('#register').hide();
+            $('#show-register').removeClass('active');
+            break;
+        case 'register':
+            $('#login').hide();
+            $('#show-login').removeClass('active');
+            $('#register').show();
+            break;
+        default:
+            break;
+    }
 }
 
 module.exports = Login;
