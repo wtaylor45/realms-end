@@ -22,12 +22,12 @@ Login.init = function(){
         return false;
     })
 
-    $('#show-login').click()
+    $('#show-login').click();
 
     Socket.on(Types.Messages.LOGIN, function(data){
-        $('#logging-in').addClass('hidden');
+        $('#logging-in').hide();
         console.log(data)
-        if(!data.success) $('#login-failed').removeClass('hidden');
+        if(!data.success) $('#login-failed').show();
     });
 }
 
@@ -38,16 +38,17 @@ Login.in = function(){
         "username": username,
         "password": password
     }
-
+    console.log('test')
     Socket.emit(Types.Messages.LOGIN, data);
 
-    $('#login-failed').addClass('hidden');
-    $('#logging-in').removeClass('hidden');
+    $('#login-failed').hide();
+    $('#logging-in').show();
 }
 
 Login.showForm = function(form){
     if(!$('#show-'+form).hasClass('active')){
         $('#show-'+form).addClass('active');
+        $('#login-failed').hide();
     }
     switch(form){
         case 'login':
@@ -57,6 +58,7 @@ Login.showForm = function(form){
             break;
         case 'register':
             $('#login').hide();
+            $('#login-failed').hide();
             $('#show-login').removeClass('active');
             $('#register').show();
             break;

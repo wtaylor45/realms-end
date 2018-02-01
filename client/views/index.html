@@ -27,46 +27,55 @@
                     <div class="form-group">
                         <label for="register-username" class="cols-sm-2 control-label">Username</label>
                         <div class="cols-sm-10">
-                            <input type="text" class="form-control" name="name" id="register-name"  placeholder="Enter a username..."/>
+                            <input type="text" class="form-control" name="name" id="register-name"  placeholder="Enter a username..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="email" class="cols-sm-2 control-label">Email</label>
                         <div class="cols-sm-10">
-                            <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your email..."/>
+                            <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your email..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="register-password" class="cols-sm-2 control-label">Password</label>
                         <div class="cols-sm-10">
-                            <input type="password" class="form-control" name="password" id="register-password"  placeholder="Enter your password..."/>
+                            <input type="password" class="form-control" name="password" id="register-password"  placeholder="Enter your password..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="confirm" class="cols-sm-2 control-label">Confirm Password</label>
                         <div class="cols-sm-10">
-                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your password..."/>
+                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your password..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group ">
                         <button type="button" class="btn btn-primary btn-lg btn-block login-button">Register</button>
                     </div>
                 </form>
+                <div id="login-failed">
+                    Invalid username or password.
+                </div>
                 <form id="login" class="form-horizontal" action="#">
                     <div class="form-group">
                         <label for="login-username" class="cols-sm-2 control-label">Username</label>
                         <div class="cols-sm-10">
-                            <input type="text" class="form-control" name="name" id="login-username"  placeholder="Enter a username..."/>
+                            <input type="text" class="form-control" name="name" id="login-username"  placeholder="Enter a username..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="login-password" class="cols-sm-2 control-label">Password</label>
                         <div class="cols-sm-10">
-                            <input type="password" class="form-control" name="password" id="login-password"  placeholder="Enter your password..."/>
+                            <input type="password" class="form-control" name="password" id="login-password"  placeholder="Enter your password..."
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group ">
-                        <button type="button" class="btn btn-primary btn-lg btn-block login-button">Login</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Login</button>
                     </div>
                 </form>
             </div>
