@@ -16,17 +16,19 @@ DB.init = function(url){
     console.log("Connected to database...");
 }
 
-DB.writeToTable = function(table, values){
+DB.writeToTable = function(table, value){
     var collection = database.collection(table);
     
     if(!collection){
         Logger.error("[writeToTable] Table", table, "not found.");
         return;
     }
+    if(!value){
+        Logger.warn("[writeToTable] No values passed. Nothing to write.");
+        return;
+    }
 
-    _.each(value, function(value){
-        collection.save(value);
-    });
+    collection.save(value);
 }
 
 DB.queryTable = function(table, query, callback){

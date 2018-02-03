@@ -23,18 +23,21 @@
                     <button id="show-login" value="login">Log in</button>
                     <button id="show-register" value="register">Register</button>
                 </div>
+                <div id="register-failed" class="login-error">
+                        Username has already been taken.
+                    </div>
                 <form id="register" class="form-horizontal" action="#">
                     <div class="form-group">
                         <label for="register-username" class="cols-sm-2 control-label">Username</label>
                         <div class="cols-sm-10">
-                            <input type="text" class="form-control" name="name" id="register-name"  placeholder="Enter a username..."
+                            <input type="text" class="form-control" name="name" id="register-username"  placeholder="Enter a username..."
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="email" class="cols-sm-2 control-label">Email</label>
+                        <label for="register-email" class="cols-sm-2 control-label">Email</label>
                         <div class="cols-sm-10">
-                            <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your email..."
+                            <input type="text" class="form-control" name="email" id="register-email"  placeholder="Enter your email..."
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
@@ -46,17 +49,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="confirm" class="cols-sm-2 control-label">Confirm Password</label>
+                        <label for="register-confirm" class="cols-sm-2 control-label">Confirm Password</label>
                         <div class="cols-sm-10">
-                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your password..."
+                            <input type="password" class="form-control" name="confirm" id="register-confirm"  placeholder="Confirm your password..."
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
                         </div>
                     </div>
                     <div class="form-group ">
-                        <button type="button" class="btn btn-primary btn-lg btn-block login-button">Register</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Register</button>
                     </div>
                 </form>
-                <div id="login-failed">
+                <div id="login-failed" class="login-error">
                     Invalid username or password.
                 </div>
                 <form id="login" class="form-horizontal" action="#">

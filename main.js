@@ -72,14 +72,11 @@ function main(options){
 
         connection.on(Types.Messages.LOGIN, function(data){
             validateCredentials(data.username, data.password, function(results){
-                Logger.debug(results)
                 if(!results || results.length == 0){
                     Logger.log('No account with credentials found.');
                     connection.emit(Types.Messages.LOGIN, {success: false});
                     return;
                 } 
-
-                Logger.info('Valid login info');
                 var world = _.detect(worlds, function(world){
                     return world.playerCount < world.maxPlayers;
                 });
@@ -93,6 +90,22 @@ function main(options){
                 connection.emit(Types.Messages.LOGIN, {success: true});
             })
         });
+
+        connection.on(Types.Messages.REGISTER, function(data){
+            checkDuplicateUsername(data, function(result){
+                var success = result.length==0;
+                var reason = success ? null : "Username already taken.";
+                connection.emit(Types.Messages.REGISTER, {"success": success, "reason": reason});
+
+                //TODO: Log them in if successful. 
+                if(!success){
+                    Logger.debug("Username " + data.username + " already taken.");
+                    return;
+                }
+
+                DB.writeToTable("re_users", data);
+            });
+        })
     });
 
     _.each(_.range(options.numWorlds), function(i){
@@ -120,6 +133,12 @@ function validateCredentials(username, password, callback){
     if(!DB) throw "No connection to database currently.";
     
     DB.queryTable("re_users", {"username": username, "password": password}, callback);
+}
+
+function checkDuplicateUsername(credentials, callback){
+    if(!DB) throw "No connection to database currently.";
+
+    DB.queryTable("re_users", {"username": credentials.username}, callback);
 }
 
 var configPath = "./server/config.json";

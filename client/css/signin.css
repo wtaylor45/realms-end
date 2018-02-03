@@ -111,8 +111,11 @@ text-align: center;
   color: aliceblue;
 }
 
-#login-failed {
+.login-error {
   color: darkred;
+  text-align: center;
+  font-style: oblique;
+  font-weight: bold;
 }
 
 @keyframes fadein {
