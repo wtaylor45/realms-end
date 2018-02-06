@@ -105,7 +105,7 @@ Login.validateRegistration = function(username, email, password, confirmation){
     if(confirmation != password){
         $('#register-failed').html("Passwords must match.");
         $('#register-failed').show();
-        return false();
+        return false;
     }
 
     if(!emailRegex.test(email)){
