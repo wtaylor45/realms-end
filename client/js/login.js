@@ -6,6 +6,7 @@ var Login = {};
 var usernameRegex = /^(?=.{1,20})[a-zA-Z0-9\-_.]+$/;;
 var emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
     passwordRegex = /^(?=.{8,})/
+var LAST_CLICK = 0, DELAY=500;
 
 Login.init = function(){
     $('#login').submit(function(e){
@@ -35,42 +36,56 @@ Login.init = function(){
     $('#show-login').click();
 
     Socket.on(Types.Messages.LOGIN, function(data){
-        $('#logging-in').hide();
-        console.log(data)
         if(!data.success){
-            $('#login-failed').show();
-            return false;
-        } 
-
-        Login.success();
+            $('#login-message').html(formatMessage(data.reason, "failed"));
+            $('#login-message').show();
+            $('#show-login').prop("disabled", false);
+            $('#show-register').prop("disabled", false);
+            $('#submit-login').prop("disabled", false);
+        }else{
+            $('#login-message').html(formatMessage(data.reason, "success"));
+            $('#login-message').show();
+        }
     });
 
     Socket.on(Types.Messages.REGISTER, function(data){
-        console.log(data)
         if(!data.success){
-            $('#register-failed').html(data.reason);
-            $('#register-failed').show();
-            return false;
+            $('#register-message').html(formatMessage(data.reason, "failed"));
+            $('#register-message').show();
+            $('#show-login').prop("disabled", true);
+            $('#show-register').prop("disabled", true);
+            $('#submit-register').prop("disabled", true);
+        }else{
+            $('#register-message').html(formatMessage(data.reason, "success"));
+            $('#register-message').show();
         } 
-
-        Login.success();
     });
 }
 
 Login.in = function(){
+    if(Date.now()-LAST_CLICK<DELAY) return;
+
     var username = $('#login-username').val(),
         password = $('#login-password').val()
     var data = {
         "username": username,
         "password": password
     }
+
+    $('#show-login').prop("disabled", true);
+    $('#show-register').prop("disabled", true);
+    $('#submit-login').prop("disabled", true);
+
     Socket.emit(Types.Messages.LOGIN, data);
 
-    $('#login-failed').hide();
-    $('#logging-in').show();
+    $('#login-message').hide();
+
+    LAST_CLICK = Date.now();
 }
 
 Login.register = function(){
+    if(Date.now()-LAST_CLICK<DELAY) return;
+
     var username = $('#register-username').val(),
         password = $('#register-password').val(),
         confirmation = $('#register-confirm').val(),
@@ -80,6 +95,10 @@ Login.register = function(){
         return;
     }
 
+    $('#show-login').prop("disabled", true);
+    $('#show-register').prop("disabled", true);
+    $('#submit-register').prop("disabled", true);
+
     var data = {
         "username": username,
         "password": password,
@@ -87,45 +106,42 @@ Login.register = function(){
     }
     Socket.emit(Types.Messages.REGISTER, data);
 
-    $('#register-failed').hide();
+    $('#register-message').hide();
+
+    LAST_CLICK = Date.now();
 }
 
 Login.validateRegistration = function(username, email, password, confirmation){
     if(!usernameRegex.test(username)){
-        $('#register-failed').html("Invalid username. Please only use a-Z, 0-9, '_', '-', or '.'.");
-        $('#register-failed').show();
+        $('#register-message').html(formatMessage("Invalid username. Please only use a-Z, 0-9, '_', '-', or '.'.", "failed"));
+        $('#register-message').show();
         return false;
     }
     if(!passwordRegex.test(password)){
-        console.log(password)
-        $('#register-failed').html("Password must be at least 8 characters long.");
-        $('#register-failed').show();
+        $('#register-message').html(formatMessage("Password must be at least 8 characters long.", "failed"));
+        $('#register-message').show();
         return false;
     }
     if(confirmation != password){
-        $('#register-failed').html("Passwords must match.");
-        $('#register-failed').show();
+        $('#register-message').html(formatMessage("Passwords must match.", "failed"));
+        $('#register-message').show();
         return false;
     }
 
     if(!emailRegex.test(email)){
-        $('#register-failed').html("Invalid email address.");
-        $('#register-failed').show();
+        $('#register-message').html(formatMessage("Invalid email address.","failed"));
+        $('#register-message').show();
         return false;
     }
 
     return true;
 }
 
-Login.success = function(){
-
-}
-
 Login.showForm = function(form){
     if(!$('#show-'+form).hasClass('active')){
         $('#show-'+form).addClass('active');
-        $('#login-failed').hide();
-        $('#register-failed').hide();
+        $('#login-message').hide();
+        $('#register-message').hide();
     }
     switch(form){
         case 'login':
@@ -135,13 +151,17 @@ Login.showForm = function(form){
             break;
         case 'register':
             $('#login').hide();
-            $('#login-failed').hide();
+            $('#login-message').hide();
             $('#show-login').removeClass('active');
             $('#register').show();
             break;
         default:
             break;
     }
+}
+
+function formatMessage(message, type){
+    return "<p class="+type+">"+message+"</p>";
 }
 
 module.exports = Login;

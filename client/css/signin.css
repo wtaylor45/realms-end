@@ -111,8 +111,15 @@ text-align: center;
   color: aliceblue;
 }
 
-.login-error {
+.failed {
   color: darkred;
+  text-align: center;
+  font-style: oblique;
+  font-weight: bold;
+}
+
+.success {
+  color: #0e7900;
   text-align: center;
   font-style: oblique;
   font-weight: bold;

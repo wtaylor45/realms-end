@@ -19,13 +19,12 @@
                 </div>
             </div> 
             <div class="main-login main-center">
-                <div class="tab cols-sm-10">
+                <div id="login-tabs" class="tab cols-sm-10">
                     <button id="show-login" value="login">Log in</button>
                     <button id="show-register" value="register">Register</button>
                 </div>
-                <div id="register-failed" class="login-error">
-                        Username has already been taken.
-                    </div>
+                <div id="register-message"></div>
+                <div id="login-message"></div>
                 <form id="register" class="form-horizontal" action="#">
                     <div class="form-group">
                         <label for="register-username" class="cols-sm-2 control-label">Username</label>
@@ -56,12 +55,9 @@
                         </div>
                     </div>
                     <div class="form-group ">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Register</button>
+                        <button type="submit" id="submit-register" class="btn btn-primary btn-lg btn-block login-button">Register</button>
                     </div>
                 </form>
-                <div id="login-failed" class="login-error">
-                    Invalid username or password.
-                </div>
                 <form id="login" class="form-horizontal" action="#">
                     <div class="form-group">
                         <label for="login-username" class="cols-sm-2 control-label">Username</label>
@@ -78,7 +74,7 @@
                         </div>
                     </div>
                     <div class="form-group ">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Login</button>
+                        <button type="submit" id="submit-login" class="btn btn-primary btn-lg btn-block login-button">Login</button>
                     </div>
                 </form>
             </div>

@@ -22,15 +22,15 @@ Account.login = function(data, connection){
     Account.getUserPasswordInfo(data.username, function(password, salt){
         if(!password || !salt){
             Logger.log('No account with credentials found.');
-            connection.emit(Types.Messages.LOGIN, {success: false});
+            connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
             return;
         }
         Account.encryptPassword(data.password, salt, function(hashResult){
             if(hashResult == password){
                 Logger.debug(data.username, "has successfully logged in.");
-                connection.emit(Types.Messages.LOGIN, {success: true});
+                connection.emit(Types.Messages.LOGIN, {success: true, reason: "Login successful.\nEntering the realm..."});
             }else{
-                connection.emit(Types.Messages.LOGIN, {success: false});
+                connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
             }
         });
     });
@@ -39,17 +39,16 @@ Account.login = function(data, connection){
 Account.register = function(data, connection){
     Account.findUser(data.username, function(result){
         if(result){
-            var reason = "Username already taken.";
-            connection.emit(Types.Messages.REGISTER, {"success": false, "reason": reason});
+            connection.emit(Types.Messages.REGISTER, {"success": false, "reason": "Username already taken."});
             Logger.debug("Username " + data.username + " already taken.");
             return;
         }
 
-        Account.registerUser(data);
+        Account.registerUser(data, connection);
     });
 }
 
-Account.registerUser = function(data){
+Account.registerUser = function(data, connection){
     Account.getSalt(function(salt){
         Account.encryptPassword(data.password, salt, function(password, salt){
             var account = Account.SCHEMA;
@@ -60,8 +59,10 @@ Account.registerUser = function(data){
     
             account.password = password;
             account.salt = salt;
-            Logger.debug(password);
+            
             DB.writeToTable(Account.USERS, account);
+
+            connection.emit(Types.Messages.REGISTER, {success: true, reason: "Account successfully created.\nEntering the realm..."});
         });
     });
 }
