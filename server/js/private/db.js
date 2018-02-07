@@ -49,4 +49,22 @@ DB.queryTable = function(table, query, callback){
     })
 }
 
+DB.findOne = function(table, query, callback){
+    var collection = database.collection(table);
+    var result;
+
+    if(!callback){
+        throw "Cannot return results without callback function.";
+    }
+
+    if(!collection){
+        console.error("[findOne] Table", table, "not found.");
+        return;
+    }
+    
+    collection.findOne(query, function(err, docs){
+        callback(docs);
+    })
+}
+
 module.exports = DB;
