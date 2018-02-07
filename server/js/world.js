@@ -6,6 +6,8 @@ var Logger = require('js-logger'),
     _ = require('underscore'),
     Player = require('./player')
 
+var worlds = [];
+
 module.exports = World = class World{
     constructor(id, maxPlayers, server){
         var self = this;
@@ -81,5 +83,24 @@ module.exports = World = class World{
         delete this.outgoingMessages[player.id];
 
         this.removeEntity(player);
+    }
+}
+
+World.createWorlds = function(numWorlds){
+    _.each(_.range(numWorlds), function(i){
+        worlds[i] = new World("world"+(i+1), options.playersPerWorld, io.sockets);
+        Logger.info('World', i, 'created.')
+    });
+}
+
+World.addPlayerToOpenWorld = function(connection){
+    var world = _.detect(worlds, function(world){
+        return world.playerCount < world.maxPlayers;
+    });
+
+    if(!world){
+        Logger.info("All worlds currently full.");
+    }else{
+        world.connectPlayer(new Player(connection, world));            
     }
 }

@@ -5,8 +5,9 @@
  var fs = require('fs'),
      Logger = require('js-logger'),
      _ = require('underscore'),
-     DB = require('./server/js/db'),
-     Types = require('./shared/js/types')
+     DB = require('./server/js/private/db'),
+     Types = require('./shared/js/types'),
+     Account = require('./server/js/private/account')
 
 function main(options){
     // File server variables
@@ -15,8 +16,7 @@ function main(options){
     var http = require('http').Server(app);
 
     var io = require('socket.io')(http);
-    var world = require('./server/js/world');
-    var worlds = []; // List of all active worlds
+    var World = require('./server/js/world');
     var uuidV1 = require('uuid/v1');
     var CONNECTIONS = [];
 
@@ -71,47 +71,15 @@ function main(options){
         CONNECTIONS.push(connection);
 
         connection.on(Types.Messages.LOGIN, function(data){
-            validateCredentials(data.username, data.password, function(results){
-                if(!results || results.length == 0){
-                    Logger.log('No account with credentials found.');
-                    connection.emit(Types.Messages.LOGIN, {success: false});
-                    return;
-                } 
-                var world = _.detect(worlds, function(world){
-                    return world.playerCount < world.maxPlayers;
-                });
-        
-                if(!world){
-                    Logger.info("All worlds currently full.");
-                }else{
-                    world.connectPlayer(new Player(connection, world));            
-                }
-
-                connection.emit(Types.Messages.LOGIN, {success: true});
-            })
+            Account.login(data, connection)
         });
 
         connection.on(Types.Messages.REGISTER, function(data){
-            checkDuplicateUsername(data, function(result){
-                var success = result.length==0;
-                var reason = success ? null : "Username already taken.";
-                connection.emit(Types.Messages.REGISTER, {"success": success, "reason": reason});
-
-                //TODO: Log them in if successful. 
-                if(!success){
-                    Logger.debug("Username " + data.username + " already taken.");
-                    return;
-                }
-
-                DB.writeToTable("re_users", data);
-            });
+            Account.register(data, connection)
         })
     });
 
-    _.each(_.range(options.numWorlds), function(i){
-        worlds[i] = new World("world"+(i+1), options.playersPerWorld, io.sockets);
-        Logger.info('World', i, 'created.')
-    });
+    World.createWorlds();
 
     Logger.timeEnd('Game server startup time');
     Logger.info('-----------------------');
@@ -127,18 +95,6 @@ function getConfig(path, callback){
             callback(json);
         }
     })
-}
-
-function validateCredentials(username, password, callback){
-    if(!DB) throw "No connection to database currently.";
-    
-    DB.queryTable("re_users", {"username": username, "password": password}, callback);
-}
-
-function checkDuplicateUsername(credentials, callback){
-    if(!DB) throw "No connection to database currently.";
-
-    DB.queryTable("re_users", {"username": credentials.username}, callback);
 }
 
 var configPath = "./server/config.json";
