@@ -45,6 +45,8 @@ Login.init = function(){
         }else{
             $('#login-message').html(formatMessage(data.reason, "success"));
             $('#login-message').show();
+            $('.main-login').hide();
+            $('.loading').removeClass('hidden');
         }
     });
 
@@ -52,12 +54,14 @@ Login.init = function(){
         if(!data.success){
             $('#register-message').html(formatMessage(data.reason, "failed"));
             $('#register-message').show();
-            $('#show-login').prop("disabled", true);
-            $('#show-register').prop("disabled", true);
-            $('#submit-register').prop("disabled", true);
+            $('#show-login').prop("disabled", false);
+            $('#show-register').prop("disabled", false);
+            $('#submit-register').prop("disabled", false);
         }else{
             $('#register-message').html(formatMessage(data.reason, "success"));
             $('#register-message').show();
+            $('.main-login').hide();
+            $('.loading').show();
         } 
     });
 }
