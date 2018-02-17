@@ -1,5 +1,6 @@
 var Socket = require('./socket'),
-    Types = require('../../shared/js/types');
+    Types = require('../../shared/js/types'),
+    Game = require('./game');
 
 var Login = {};
 
@@ -45,8 +46,9 @@ Login.init = function(){
         }else{
             $('#login-message').html(formatMessage(data.reason, "success"));
             $('#login-message').show();
-            $('.main-login').hide();
-            $('.loading').removeClass('hidden');
+            $('#startDiv').hide();
+            //$('.loading').removeClass('hidden');
+            new Game();
         }
     });
 
@@ -62,7 +64,7 @@ Login.init = function(){
             $('#register-message').show();
             $('.main-login').hide();
             $('.loading').show();
-        } 
+        }
     });
 }
 
@@ -94,7 +96,7 @@ Login.register = function(){
         password = $('#register-password').val(),
         confirmation = $('#register-confirm').val(),
         email = $('#register-email').val();
-    
+
     if(!Login.validateRegistration(username, email, password, confirmation)){
         return;
     }
