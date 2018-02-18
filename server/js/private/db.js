@@ -67,4 +67,17 @@ DB.findOne = function(table, query, callback){
     })
 }
 
+DB.updateEntry = function(table, query, value){
+    var collection = database.collection(table);
+
+    if(!collection){
+        Logger.error('No table with name '+table+" found.");
+    }
+    if(!query || !value){
+        Logger.error('Query and value to set are both required when updating an entry.');
+    }
+
+    collection.update(query, value);
+}
+
 module.exports = DB;

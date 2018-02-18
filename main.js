@@ -67,6 +67,8 @@ function main(options){
     Logger.info('Starting game server...');
     Logger.time('Game server startup time');
 
+    DB.updateEntry("re_users", {}, {$set: {online: false}});
+
     io.sockets.on('connection', function(connection){
         CONNECTIONS.push(connection);
 
@@ -79,7 +81,7 @@ function main(options){
         })
     });
 
-    World.createWorlds();
+    World.createWorlds(options.numWorlds, options.playersPerWorld, io.sockets);
 
     Logger.timeEnd('Game server startup time');
     Logger.info('-----------------------');

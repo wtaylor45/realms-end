@@ -1,7 +1,8 @@
 var crypto = require('crypto'),
     _ = require('underscore'),
     DB = require('./db'),
-    Logger = require('js-logger')
+    Logger = require('js-logger'),
+    World = require('../world')
 
 Account = {};
 
@@ -28,7 +29,8 @@ Account.login = function(data, connection){
         Account.encryptPassword(data.password, salt, function(hashResult){
             if(hashResult == password){
                 Logger.debug(data.username, "has successfully logged in.");
-                connection.emit(Types.Messages.LOGIN, {success: true, reason: "Login successful.\nEntering the realm..."});
+                World.addPlayerToOpenWorld(data.username, connection);
+                
             }else{
                 connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
             }

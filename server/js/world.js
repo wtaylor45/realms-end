@@ -4,7 +4,9 @@
 
 var Logger = require('js-logger'),
     _ = require('underscore'),
-    Player = require('./player')
+    Player = require('./player'),
+    DB = require('./private/db'),
+    Types = require('../../shared/js/types.js')
 
 var worlds = [];
 
@@ -27,13 +29,22 @@ module.exports = World = class World{
         this.onPlayerConnect(function(player){
             self.incrementPlayerCount();
 
-            Logger.info("Player", player.id, "added.");
+            // Sets the player online
+            DB.updateEntry("re_users", {username: player.username}, {$set: {online: true}});
+
+            Logger.info("Player", player.username, "added.");
             Logger.info(self.id, "capacity:",
                 self.playerCount+"/"+self.maxPlayers);
+
+            player.connection.emit(
+                Types.Messages.LOGIN, 
+                {success: true, reason: "Login successful.\nEntering the realm..."}
+            );
             
             player.onDisconnect(function(){
                 self.removePlayer(player);
                 self.decrementPlayerCount();
+                DB.updateEntry("re_users", {username: player.username}, {$set: {online: false}});
 
                 Logger.info("Player", player.id,"removed.") 
                 Logger.info(self.id, "capacity:",
@@ -60,7 +71,7 @@ module.exports = World = class World{
         this.playerCount--;
 
         if(this.playerCount < 0){
-            Logger.warn("WARNING: Player count currently", this.playerCount
+            Logger.error("ERROR: Player count currently", this.playerCount
                 +". Player counts should never fall below 0.");
         }
     }
@@ -86,14 +97,14 @@ module.exports = World = class World{
     }
 }
 
-World.createWorlds = function(numWorlds){
+World.createWorlds = function(numWorlds, playersPerWorld, server){
     _.each(_.range(numWorlds), function(i){
-        worlds[i] = new World("world"+(i+1), options.playersPerWorld, io.sockets);
+        worlds[i] = new World("world"+(i+1), playersPerWorld, server);
         Logger.info('World', i, 'created.')
     });
 }
 
-World.addPlayerToOpenWorld = function(connection){
+World.addPlayerToOpenWorld = function(username, connection){
     var world = _.detect(worlds, function(world){
         return world.playerCount < world.maxPlayers;
     });
@@ -101,6 +112,6 @@ World.addPlayerToOpenWorld = function(connection){
     if(!world){
         Logger.info("All worlds currently full.");
     }else{
-        world.connectPlayer(new Player(connection, world));            
+        world.connectPlayer(new Player(username, connection, world));            
     }
 }

@@ -2,6 +2,6 @@
     "port": 2000,
     "debugLevel": "debug",
     "numWorlds": 1,
-    "playersPerWorld": 1,
+    "playersPerWorld": 10,
     "dbURL": "local"
 }

@@ -1,25 +1,29 @@
 
 
 module.exports = Renderer = class Renderer{
-  constructor(fps){
-    this.fps = fps;
-    this.running;
-    this.canvas = null;
+  constructor(options){
+    this.running = false; // Is the renderer currently updating
+    this.canvas = null; // The canvas we render on to
     this.ctx = null; // The canvas context used for rendering
     this.nextTick = null; // The next animation frame that will be requested
     this.font = "Cinzel" // Default font to use
-    this.lastUpdate = null; 
+    this.lastUpdate = null; // Time of the last update of FPS
     this.frameCount = 0;
-    this.realFPS = 0;
-    this.WIDTH = null;
-    this.HEIGHT = null;
+    this.realFPS = 0; // The actual amount of frames per second
+    this.WIDTH = null; // The width of the canvas
+    this.HEIGHT = null; // The height of the canvas
+    // A list of options for what the renderer should/shouldn't draw
+    options = options || {};
     this.options = {
-      showFPS: true
+      showFPS: options.showFPS || true
     }
 
-    this.init();
+    this.init(); // Start 'er up
   }
 
+  /**
+   * Initialize the renderer.
+   */
   init(){
     // Let's create the canvas here...
     this.WIDTH = $('#game').width();
@@ -31,6 +35,9 @@ module.exports = Renderer = class Renderer{
     document.getElementById('game').append(this.canvas);
   }
 
+  /**
+   * Start rendering.
+   */
   start(){
     if(this.running){
       console.warn('Renderer already running, but attempting to be started again.');
@@ -41,6 +48,9 @@ module.exports = Renderer = class Renderer{
     this.tick();
   }
 
+  /**
+   * What to do every time a new frame is to be rendered.
+   */
   tick(){
     if(!this.running) return;
     this.clearCanvas();
@@ -51,10 +61,22 @@ module.exports = Renderer = class Renderer{
     window.requestAnimationFrame(this.tick.bind(this));
   }
 
+  /** 
+   * Clear the canvas and all of its contents. 
+   */
   clearCanvas(){
     this.ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
   }
 
+  /**
+   * Draw the provided text on the canvas.
+   * 
+   * @param {string}  text  The text to be added to the canvas.
+   * @param {number}  x     The x coordinate of the text to be drawn.
+   * @param {number}  y     The y coordinate of the text to be drawn. 
+   * @param {number}  size  The size in pixels of the text to be drawn.
+   * @param {string}  color The color of the text to be drawn.    
+   */
   drawText(text, x, y, size, font, color){
     if(!text) console.error('No text to draw.');
     if(!x || !y) console.error('Need the x and y coordinates of where to draw text.');
@@ -67,6 +89,9 @@ module.exports = Renderer = class Renderer{
     this.ctx.fillText(text, x+size, y+size)
   }
 
+  /**
+   * Draw the frames per second on the canvas.
+   */
   drawFPS(){
     var dt = Date.now() - this.lastUpdate;
 
@@ -81,7 +106,9 @@ module.exports = Renderer = class Renderer{
 
     this.drawText("FPS: "+this.realFPS, 10, 10, 12, null, "yellow");
   }
-
+  /**
+   * Draw a black background on the entire canvas.
+   */
   drawBackground(){
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0,0,this.WIDTH,this.HEIGHT);
