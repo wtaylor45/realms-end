@@ -67,7 +67,7 @@ function main(options){
     Logger.info('Starting game server...');
     Logger.time('Game server startup time');
 
-    DB.updateEntry("re_users", {}, {$set: {online: false}});
+    DB.updateEntry("re_users", {}, {$set: {online: false}}, true);
 
     io.sockets.on('connection', function(connection){
         CONNECTIONS.push(connection);

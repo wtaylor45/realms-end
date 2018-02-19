@@ -33,6 +33,9 @@ module.exports = Renderer = class Renderer{
     this.canvas.height = this.HEIGHT;
     this.ctx = this.canvas.getContext('2d');
     document.getElementById('game').append(this.canvas);
+
+    //Listen for resize 
+    window.addEventListener('resize', this.onResize.bind(this));
   }
 
   /**
@@ -128,5 +131,18 @@ module.exports = Renderer = class Renderer{
   unfreeze(){
     if(this.running) console.warn('Renderer already running.')
     this.running = true;
+  }
+
+  setCanvasWidth(width){
+    this.WIDTH = this.canvas.width = width;
+  }
+
+  setCanvasHeight(height){
+    this.HEIGHT = this.canvas.height = height;
+  }
+
+  onResize(){
+    this.setCanvasWidth($('#game').width());
+    this.setCanvasHeight($('#game').height());
   }
 }

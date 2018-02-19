@@ -67,7 +67,7 @@ DB.findOne = function(table, query, callback){
     })
 }
 
-DB.updateEntry = function(table, query, value){
+DB.updateEntry = function(table, query, value, multi){
     var collection = database.collection(table);
 
     if(!collection){
@@ -77,7 +77,7 @@ DB.updateEntry = function(table, query, value){
         Logger.error('Query and value to set are both required when updating an entry.');
     }
 
-    collection.update(query, value);
+    collection.update(query, value, {multi: multi || false});
 }
 
 module.exports = DB;
