@@ -20,14 +20,19 @@ Account.SCHEMA = {
  * Validate the credentials received and log the user in.
  */
 Account.login = function(data, connection){
-    Account.getUserPasswordInfo(data.username, function(password, salt){
-        if(!password || !salt){
+    Account.getUserInfo(data.username, function(result){
+        if(!result){
             Logger.log('No account with credentials found.');
-            connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
+            connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."}); 
             return;
         }
-        Account.encryptPassword(data.password, salt, function(hashResult){
-            if(hashResult == password){
+        Account.encryptPassword(data.password, result.salt, function(hashResult){
+            if(hashResult == result.password){
+                if(result.online){
+                    Logger.log('Account has already logged in.');
+                    connection.emit(Types.Messages.LOGIN, {success: false, reason: "Account is still logged in."}); 
+                    return;
+                }
                 Logger.debug(data.username, "has successfully logged in.");
                 World.addPlayerToOpenWorld(data.username, connection);
                 
@@ -88,13 +93,13 @@ Account.findUser = function(username, callback){
     });
 }
 
-Account.getUserPasswordInfo = function(username, callback){
+Account.getUserInfo = function(username, callback){
     Account.findUser(username, function(result){
         if(!result){
             callback(result);
             return;
         }
-        callback(result.password, result.salt);
+        callback(result);
     })
 }
 
