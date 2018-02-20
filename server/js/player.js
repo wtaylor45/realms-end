@@ -1,10 +1,11 @@
-var Character = require('./character');
+var Character = require('./character'),
+    DB = require('./private/db'),
+    Logger = require('js-logger')
 
-module.exports = Player = class Player extends Entity {
-    constructor(username, connection, worldServer){
-        super(connection.id);
+module.exports = Player = class Player extends Character {
+    constructor(id, username, x, y, map, connection, worldServer){
+        super(id, username, x, y, map);
         var self = this;
-        this.username = username;
         this.connection = connection;
         this.worldServer = worldServer;
 

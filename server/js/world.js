@@ -6,7 +6,8 @@ var Logger = require('js-logger'),
     _ = require('underscore'),
     Player = require('./player'),
     DB = require('./private/db'),
-    Types = require('../../shared/js/types.js')
+    Types = require('../../shared/js/types.js'),
+    Message = require('./message')
 
 var worlds = [];
 
@@ -31,14 +32,16 @@ module.exports = World = class World{
 
             // Sets the player online
             DB.updateEntry("re_users", {username: player.username}, {$set: {online: true}});
-
+            
             Logger.info("Player", player.username, "added.");
             Logger.info(self.id, "capacity:",
                 self.playerCount+"/"+self.maxPlayers);
 
+            var message = new Message.Login(player);
+
             player.connection.emit(
-                Types.Messages.LOGIN, 
-                {success: true, reason: "Login successful.\nEntering the realm..."}
+                message.type, 
+                message.serialize()
             );
             
             player.onDisconnect(function(){
@@ -104,7 +107,7 @@ World.createWorlds = function(numWorlds, playersPerWorld, server){
     });
 }
 
-World.addPlayerToOpenWorld = function(username, connection){
+World.addPlayerToOpenWorld = function(data, connection){
     var world = _.detect(worlds, function(world){
         return world.playerCount < world.maxPlayers;
     });
@@ -112,6 +115,7 @@ World.addPlayerToOpenWorld = function(username, connection){
     if(!world){
         Logger.info("All worlds currently full.");
     }else{
-        world.connectPlayer(new Player(username, connection, world));            
+        world.connectPlayer(new Player(data.id, data.username, data.x, data.y, 
+            data.map, connection, world));            
     }
 }

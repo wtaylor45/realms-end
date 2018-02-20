@@ -1,7 +1,7 @@
-
+var _ = require('underscore');
 
 module.exports = Renderer = class Renderer{
-  constructor(options){
+  constructor(game, options){
     this.running = false; // Is the renderer currently updating
     this.canvas = null; // The canvas we render on to
     this.ctx = null; // The canvas context used for rendering
@@ -12,6 +12,7 @@ module.exports = Renderer = class Renderer{
     this.realFPS = 0; // The actual amount of frames per second
     this.WIDTH = null; // The width of the canvas
     this.HEIGHT = null; // The height of the canvas
+    this.game = game;
     // A list of options for what the renderer should/shouldn't draw
     options = options || {};
     this.options = {
@@ -58,6 +59,9 @@ module.exports = Renderer = class Renderer{
     if(!this.running) return;
     this.clearCanvas();
     this.drawBackground();
+    this.drawMapLow();
+    this.drawEntities();
+    this.drawPlayer();
 
     if(this.options.showFPS) this.drawFPS();
 
@@ -71,14 +75,35 @@ module.exports = Renderer = class Renderer{
     this.ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
   }
 
+  drawMapLow(){
+    this.ctx.drawImage(this.game.player.map.Image,0,0);
+  }
+
+  drawEntities(){
+    _.each(this.game.entities, this.drawEntity);
+  }
+
+  drawPlayer(){
+    this.drawEntity(this.game.player);
+  }
+
+  /**
+   * Draw an entity.
+   * 
+   * @param {Object}  entity  The entity to be drawn.    
+   */
+  drawEntity(entity){
+    this.ctx.drawImage(entity.getSprite(), entity.x, entity.y);
+  }
+
   /**
    * Draw the provided text on the canvas.
    * 
-   * @param {string}  text  The text to be added to the canvas.
-   * @param {number}  x     The x coordinate of the text to be drawn.
-   * @param {number}  y     The y coordinate of the text to be drawn. 
-   * @param {number}  size  The size in pixels of the text to be drawn.
-   * @param {string}  color The color of the text to be drawn.    
+   * @param {string}  text    The text to be added to the canvas.
+   * @param {number}  x       The x coordinate of the text to be drawn.
+   * @param {number}  y       The y coordinate of the text to be drawn. 
+   * @param {number}  size    The size in pixels of the text to be drawn.
+   * @param {string}  color   The color of the text to be drawn.    
    */
   drawText(text, x, y, size, font, color){
     if(!text) console.error('No text to draw.');

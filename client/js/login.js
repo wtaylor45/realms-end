@@ -37,18 +37,7 @@ Login.init = function(){
     $('#show-login').click();
 
     Socket.on(Types.Messages.LOGIN, function(data){
-        if(!data.success){
-            $('#login-message').html(formatMessage(data.reason, "failed"));
-            $('#login-message').show();
-            $('#show-login').prop("disabled", false);
-            $('#show-register').prop("disabled", false);
-            $('#submit-login').prop("disabled", false);
-        }else{
-            $('#login-message').html(formatMessage(data.reason, "success"));
-            $('#login-message').show();
-            $('#startDiv').hide();
-            new Game();
-        }
+        Login.handleResponse(data);
     });
 
     Socket.on(Types.Messages.REGISTER, function(data){
@@ -79,16 +68,16 @@ Login.in = function(){
 
 Login.handleResponse = function(data){
     if(!data.success){
-        $('#register-message').html(formatMessage(data.reason, "failed"));
-        $('#register-message').show();
+        $('#login-message').html(formatMessage(data.reason, "failed"));
+        $('#login-message').show();
         $('#show-login').prop("disabled", false);
         $('#show-register').prop("disabled", false);
-        $('#submit-register').prop("disabled", false);
+        $('#submit-login').prop("disabled", false);
     }else{
-        $('#register-message').html(formatMessage(data.reason, "success"));
-        $('#register-message').show();
-        $('.main-login').hide();
-        $('.loading').show();
+        $('#login-message').html(formatMessage(data.reason, "success"));
+        $('#login-message').show();
+        $('#startDiv').hide();
+        new Game(data.playerData);
     }
 }
 

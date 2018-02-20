@@ -14,6 +14,9 @@ Account.SCHEMA = {
     salt: "",
     email: "",
     online: false,
+    map: "",
+    x: "",
+    y: ""
 }
 
 /**
@@ -34,7 +37,7 @@ Account.login = function(data, connection){
                     return;
                 }
                 Logger.debug(data.username, "has successfully logged in.");
-                World.addPlayerToOpenWorld(data.username, connection);
+                World.addPlayerToOpenWorld(result, connection);
                 
             }else{
                 connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
