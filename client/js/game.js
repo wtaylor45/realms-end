@@ -17,7 +17,6 @@ module.exports = Game = class Game{
     var readyInterval = setInterval(function(){
       if(self.player.sprite.isLoaded && self.player.map.isLoaded){
         clearInterval(readyInterval);
-        console.log('Okay lets go!');
         self.start();
       }
     }, 10);
@@ -29,11 +28,16 @@ module.exports = Game = class Game{
     }
 
     this.renderer.start();
-
+    this.lastUpdate = Date.now();
     var gameLoop = setInterval(this.tick.bind(this), this.FPS);
   }
 
-  tick(){}
+  tick(){
+    // Calculate delta time in ms
+    var dt = (Date.now() - this.lastUpdate)/1000;
+    this.player.update(dt);
+    this.lastUpdate = Date.now();
+  }
 
   createPlayer(data){
     var player = new Player(data.name, data.x, data.y, data.map);

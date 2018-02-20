@@ -109,7 +109,6 @@ module.exports = Renderer = class Renderer{
     var sprite = entity.getSprite();
     var width = sprite.width*this.renderScale;
     var height = sprite.height*this.renderScale;
-    console.log(width)
     this.ctx.drawImage(sprite, entity.x, entity.y, width, height);
   }
 

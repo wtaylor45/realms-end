@@ -1,0 +1,8 @@
+{
+    "name": "Slime",
+    "sprite": "/client/assets/sprites/mobs/slime0.png",
+    "stats": {
+        "maxHealth": 5,
+        "maxSpeed": 100
+    }
+}
