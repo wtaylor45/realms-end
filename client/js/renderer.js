@@ -16,8 +16,10 @@ module.exports = Renderer = class Renderer{
     // A list of options for what the renderer should/shouldn't draw
     options = options || {};
     this.options = {
-      showFPS: options.showFPS || true
+      showFPS: options.showFPS || true,
+      renderScale: options.renderScale || 2
     }
+    this.renderScale = this.options.renderScale;
 
     this.init(); // Start 'er up
   }
@@ -35,8 +37,16 @@ module.exports = Renderer = class Renderer{
     this.ctx = this.canvas.getContext('2d');
     document.getElementById('game').append(this.canvas);
 
+    this.ctx.mozImageSmoothingEnabled = false;	
+    this.ctx.msImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
+
     //Listen for resize 
     window.addEventListener('resize', this.onResize.bind(this));
+  }
+
+  setRenderScale(scale){
+    this.renderScale = scale;
   }
 
   /**
@@ -76,7 +86,10 @@ module.exports = Renderer = class Renderer{
   }
 
   drawMapLow(){
-    this.ctx.drawImage(this.game.player.map.Image,0,0);
+    var map = this.game.player.map.Image;
+    var width = map.width*this.renderScale;
+    var height = map.height*this.renderScale;
+    this.ctx.drawImage(map,0,0, width, height);
   }
 
   drawEntities(){
@@ -93,7 +106,11 @@ module.exports = Renderer = class Renderer{
    * @param {Object}  entity  The entity to be drawn.    
    */
   drawEntity(entity){
-    this.ctx.drawImage(entity.getSprite(), entity.x, entity.y);
+    var sprite = entity.getSprite();
+    var width = sprite.width*this.renderScale;
+    var height = sprite.height*this.renderScale;
+    console.log(width)
+    this.ctx.drawImage(sprite, entity.x, entity.y, width, height);
   }
 
   /**
@@ -169,5 +186,8 @@ module.exports = Renderer = class Renderer{
   onResize(){
     this.setCanvasWidth($('#game').width());
     this.setCanvasHeight($('#game').height());
+    this.ctx.mozImageSmoothingEnabled = false;	
+    this.ctx.msImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
   }
 }

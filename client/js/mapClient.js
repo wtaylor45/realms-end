@@ -7,6 +7,8 @@ module.exports = Map = class Map {
         this.image.src = MAP_PATH+imagePath+".png";
         this.isLoaded = false;
         this.image.onload = function(){
+            self.width = this.width;
+            self.height = this.height;
             self.isLoaded = true;
         }
     }

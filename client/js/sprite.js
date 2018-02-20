@@ -8,6 +8,8 @@ module.exports = Sprite = class Sprite {
         this.sprite.src = this.spritePath;
         this.isLoaded = false;
         this.sprite.onload = function(){
+            self.width = this.width;
+            self.height = this.height;
             self.isLoaded = true;
         }
     }
