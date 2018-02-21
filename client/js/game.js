@@ -41,7 +41,7 @@ module.exports = Game = class Game{
 
   createPlayer(data){
     var player = new Player(data.name, data.x, data.y, data.map);
-    // TODO: Set stats
+    player.setStats(data.stats);
     return player;
   }
 }

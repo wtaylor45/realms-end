@@ -1,6 +1,7 @@
 var Character = require('./character'),
     DB = require('./private/db'),
     Logger = require('js-logger'),
+    Message = require('./message'),
     Types = require('../../shared/js/types'),
     Races = require('../../shared/js/races')
 
@@ -15,15 +16,31 @@ module.exports = Player = class Player extends Character {
             self.disconnectCallback();
         });
 
+        this.onLoaded(function(){
+            var message = new Message.Login(self);
+            self.connection.emit(
+                message.type, 
+                message.serialize()
+            );
+        })
+
         this.init(); // Initialize other parts of players
     }
 
     init(){
+        this.initializeStats(this.loadCallback);
+    }
+
+    initializeStats(callback){
         var self = this;
         DB.findOne(DB.STATS, {userId: this.id}, function(result){
-            Logger.debug(self.id);
             self.setStats(result);
+            callback();
         });
+    }
+
+    onLoaded(callback){
+        this.loadCallback = callback;
     }
 
     onDisconnect(callback){

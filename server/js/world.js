@@ -31,23 +31,16 @@ module.exports = World = class World{
             self.incrementPlayerCount();
 
             // Sets the player online
-            DB.updateEntry("re_users", {username: player.username}, {$set: {online: true}});
+            DB.updateEntry(DB.USERS, {username: player.username}, {$set: {online: true}});
             
-            Logger.info("Player", player.username, "added.");
+            Logger.info("Player", player.name, "added.");
             Logger.info(self.id, "capacity:",
                 self.playerCount+"/"+self.maxPlayers);
-
-            var message = new Message.Login(player);
-
-            player.connection.emit(
-                message.type, 
-                message.serialize()
-            );
             
             player.onDisconnect(function(){
                 self.removePlayer(player);
                 self.decrementPlayerCount();
-                DB.updateEntry("re_users", {username: player.username}, {$set: {online: false}});
+                DB.updateEntry(DB.USERS, {username: player.username}, {$set: {online: false}});
 
                 Logger.info("Player", player.id,"removed.") 
                 Logger.info(self.id, "capacity:",

@@ -4,8 +4,6 @@ var Entity = require('./entity'),
 module.exports = Character = class Character extends Entity {
     constructor(x, y, sprite){
         super(x,y,sprite);
-        this.maxHealth = 100;
-        this.curHealth = 100;
     }
 
     setStats(stats){

@@ -25,7 +25,7 @@ module.exports = Player = class Player extends Character {
     applyInputs(dt){
         var vector = Input.getVector();
         
-        this.x += 150*dt*vector[0];
-        this.y += 150*dt*vector[1];
+        this.x += this.curSpeed*dt*vector[0];
+        this.y += this.curSpeed*dt*vector[1];
     }
 }

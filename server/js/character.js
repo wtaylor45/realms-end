@@ -5,10 +5,10 @@ module.exports = Character = class Character extends Entity {
     constructor(id, name, x, y, map){
         super(id, x, y, map);
         this.name = name;
-        this.maxHealth = 100;
-        this.curHealth = 100;
-        this.maxSpeed = 10;
-        this.curSpeed = 10;
+        this.maxHealth = null;
+        this.curHealth = null;
+        this.maxSpeed = null;
+        this.curSpeed = null;
     }
 
     getState(){
@@ -32,6 +32,5 @@ module.exports = Character = class Character extends Entity {
         this.curHealth = stats.curHealth;
         this.maxSpeed = stats.maxSpeed;
         this.curSpeed = stats.curSpeed;
-        Logger.debug(stats);
     }
 }
