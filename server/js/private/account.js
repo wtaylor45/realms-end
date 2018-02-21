@@ -2,22 +2,10 @@ var crypto = require('crypto'),
     _ = require('underscore'),
     DB = require('./db'),
     Logger = require('js-logger'),
-    World = require('../world')
+    World = require('../world'),
+    Player = require('../player')
 
 Account = {};
-
-Account.USERS = "re_users";
-
-Account.SCHEMA = {
-    username: "",
-    password: "",
-    salt: "",
-    email: "",
-    online: false,
-    map: "",
-    x: "",
-    y: ""
-}
 
 /**
  * Validate the credentials received and log the user in.
@@ -37,6 +25,7 @@ Account.login = function(data, connection){
                     return;
                 }
                 Logger.debug(data.username, "has successfully logged in.");
+                connection.emit(Types.Messages.LOGIN, {success: false, reason: "Login successful! Entering the realm...", complete: false}); 
                 World.addPlayerToOpenWorld(result, connection);
                 
             }else{
@@ -59,9 +48,10 @@ Account.register = function(data, connection){
 }
 
 Account.registerUser = function(data, connection){
+    var unencryptedData = data;
     Account.getSalt(function(salt){
         Account.encryptPassword(data.password, salt, function(password, salt){
-            var account = Account.SCHEMA;
+            var account = DB.ACCOUNT_SCHEMA;
     
             account = _.mapObject(account, function(val, key){
                 return data[key] || account[key];
@@ -70,9 +60,12 @@ Account.registerUser = function(data, connection){
             account.password = password;
             account.salt = salt;
             
-            DB.writeToTable(Account.USERS, account);
-
-            connection.emit(Types.Messages.REGISTER, {success: true, reason: "Account successfully created.\nEntering the realm..."});
+            DB.writeToTable(DB.USERS, account, function(data){
+                Player.createNewPlayer(account.username, function(){
+                    Account.login(unencryptedData, connection);
+                });
+            });
+            connection.emit(Types.Messages.REGISTER, {success: true, reason: "Account successfully created.\nLogging in...", complete: false});
         });
     });
 }
@@ -85,13 +78,12 @@ Account.encryptPassword = function(password, salt, callback){
 
 Account.getSalt = function(callback){
     crypto.randomBytes(32, function(err, salt){
-        Logger.debug(salt)
         callback(salt.toString('base64'));
     });
 }
 
 Account.findUser = function(username, callback){
-    DB.findOne(Account.USERS, {"username": username}, function(result){
+    DB.findOne(DB.USERS, {"username": username}, function(result){
         callback(result);
     });
 }

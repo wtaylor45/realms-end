@@ -73,11 +73,15 @@ Login.handleResponse = function(data){
         $('#show-login').prop("disabled", false);
         $('#show-register').prop("disabled", false);
         $('#submit-login').prop("disabled", false);
+        $('#submit-register').prop("disabled", false);
     }else{
         $('#login-message').html(formatMessage(data.reason, "success"));
         $('#login-message').show();
-        $('#startDiv').hide();
-        new Game(data.playerData);
+        console.log(data.complete)
+        if(data.complete){
+            $('#startDiv').hide();
+            new Game(data.playerData);
+        }
     }
 }
 

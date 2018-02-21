@@ -115,7 +115,7 @@ World.addPlayerToOpenWorld = function(data, connection){
     if(!world){
         Logger.info("All worlds currently full.");
     }else{
-        world.connectPlayer(new Player(data.id, data.username, data.x, data.y, 
+        world.connectPlayer(new Player(data._id, data.username, data.x, data.y, 
             data.map, connection, world));            
     }
 }

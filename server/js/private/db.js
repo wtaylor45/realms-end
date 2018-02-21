@@ -5,6 +5,28 @@ var mongojs = require('mongojs'),
 var DB = {};
 var database;
 
+DB.USERS = "re_users";
+DB.STATS = "re_userStats";
+
+DB.STATS_SCHEMA = {
+    userId: "",
+    maxHealth: 0,
+    curHealth: 0,
+    maxSpeed: 0,
+    curSpeed: 0
+}
+
+DB.ACCOUNT_SCHEMA = {
+    username: "",
+    password: "",
+    salt: "",
+    email: "",
+    online: false,
+    map: "",
+    x: "",
+    y: ""
+}
+
 DB.init = function(url){
     console.log('Connecting to DB')
     database = mongojs(url);
@@ -16,7 +38,7 @@ DB.init = function(url){
     console.log("Connected to database...");
 }
 
-DB.writeToTable = function(table, value){
+DB.writeToTable = function(table, value, callback){
     var collection = database.collection(table);
     
     if(!collection){
@@ -27,8 +49,8 @@ DB.writeToTable = function(table, value){
         Logger.warn("[writeToTable] No values passed. Nothing to write.");
         return;
     }
-
-    collection.save(value);
+    if(!callback) callback = function(){};
+    collection.insert(value, callback);
 }
 
 DB.queryTable = function(table, query, callback){

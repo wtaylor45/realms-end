@@ -32,5 +32,6 @@ module.exports = Character = class Character extends Entity {
         this.curHealth = stats.curHealth;
         this.maxSpeed = stats.maxSpeed;
         this.curSpeed = stats.curSpeed;
+        Logger.debug(stats);
     }
 }

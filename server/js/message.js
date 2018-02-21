@@ -13,9 +13,11 @@ Message.Login = class Login {
         var message = {};
         if(this.player){
             message.success = true;
+            message.complete = true;
             message.playerData = this.player.getState();
         }else{
             message.success = false;
+            message.complete = false;
         }
         message.reason = this.reason;
         return message;
