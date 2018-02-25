@@ -3,7 +3,8 @@ var Character = require('./character'),
     Logger = require('js-logger'),
     Message = require('./message'),
     Types = require('../../shared/js/types'),
-    Races = require('../../shared/js/races')
+    Races = require('../../shared/js/races'),
+    PlayerModel = require('../../shared/js/playerModel')
 
 module.exports = Player = class Player extends Character {
     constructor(id, username, x, y, map, connection, worldServer){
@@ -11,6 +12,7 @@ module.exports = Player = class Player extends Character {
         var self = this;
         this.connection = connection;
         this.worldServer = worldServer;
+        this.model = new PlayerModel(this);
 
         this.connection.on('disconnect', function(){
             self.disconnectCallback();
@@ -22,9 +24,11 @@ module.exports = Player = class Player extends Character {
                 message.type, 
                 message.serialize()
             );
-        })
+        });
 
         this.init(); // Initialize other parts of players
+
+        this.initializeListeners(); // Initialize message listeners
     }
 
     init(){
@@ -34,8 +38,19 @@ module.exports = Player = class Player extends Character {
     initializeStats(callback){
         var self = this;
         DB.findOne(DB.STATS, {userId: this.id}, function(result){
+            delete result.userId;
+            delete result._id;
+
             self.setStats(result);
             callback();
+        });
+    }
+    
+
+    initializeListeners(){
+        var self = this;
+        this.connection.on(Types.Messages.MOVE, function(data){
+            self.onMove(data);
         });
     }
 
@@ -45,6 +60,10 @@ module.exports = Player = class Player extends Character {
 
     onDisconnect(callback){
         this.disconnectCallback = callback;
+    }
+
+    onMove(data){
+        this.model.move(data.vector, data.dt);
     }
 }
 

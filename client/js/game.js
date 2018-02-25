@@ -40,8 +40,9 @@ module.exports = Game = class Game{
   }
 
   createPlayer(data){
-    var player = new Player(data.name, data.x, data.y, data.map);
-    player.setStats(data.stats);
+    console.log(data);
+    var player = new Player(data.id, data.name, data.x, data.y, data.map);
+    player.model.setStats(data.stats);
     return player;
   }
 }

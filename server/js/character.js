@@ -1,14 +1,12 @@
 var Entity = require('./entity'),
-    Logger = require('js-logger')
+    Logger = require('js-logger'),
+    CharacterModel = require('../../shared/js/characterModel')
 
 module.exports = Character = class Character extends Entity {
     constructor(id, name, x, y, map){
         super(id, x, y, map);
         this.name = name;
-        this.maxHealth = null;
-        this.curHealth = null;
-        this.maxSpeed = null;
-        this.curSpeed = null;
+        this.model = new CharacterModel();
     }
 
     getState(){
@@ -18,19 +16,12 @@ module.exports = Character = class Character extends Entity {
         return state;
     }
 
-    getStats(){
-        return {
-            maxHealth: this.maxHealth,
-            curHealth: this.curHealth,
-            maxSpeed: this.maxSpeed,
-            curSpeed: this.curSpeed
-        }
+    setStats(stats){
+        this.model.setStats(stats);
     }
 
-    setStats(stats){
-        this.maxHealth = stats.maxHealth;
-        this.curHealth = stats.curHealth;
-        this.maxSpeed = stats.maxSpeed;
-        this.curSpeed = stats.curSpeed;
+    getStats(){
+        return this.model.getStats();
     }
+       
 }
