@@ -27,23 +27,56 @@ module.exports = Player = class Player extends Character {
         });
 
         this.init(); // Initialize other parts of players
-
-        this.initializeListeners(); // Initialize message listeners
     }
 
     init(){
-        this.initializeStats(this.loadCallback);
+        var self=this;
+        var statsReady, locationReady;
+        this.initializeStats(function(){
+            statsReady = true;
+        });
+        this.initializeLocation(function(){
+            locationReady = true;
+        });
+
+        var onReady = setInterval(function(){
+            if(statsReady && locationReady){
+                cancelInterval(onReady);
+                self.initializeListeners();
+            }
+        }, 10);
     }
 
     initializeStats(callback){
         var self = this;
         DB.findOne(DB.STATS, {userId: this.id}, function(result){
+            if(!result){
+                Logger.warn("No stats for", self.name, "found. Creating their statistics...");
+                var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
+                stats.userId = self.id;
+                return DB.writeToTable(DB.STATS, stats, callback);
+            }
+
             delete result.userId;
             delete result._id;
 
             self.setStats(result);
-            callback();
+            if(callback) callback();
         });
+    }
+
+    initializeLocation(callback){
+        var self = this;
+        DB.findOne(DB.LOCATION, {userId: this.id}, function(result){
+            if(!result){
+                Logger.warn("No location found. Setting to base location...");
+                var location = Player.setBaseLocationFromRace();
+                location.userId = self.id;
+                return DB.writeToTable(DB.LOCATION, location, callback);
+            }
+        });
+
+
     }
     
 
@@ -70,11 +103,26 @@ module.exports = Player = class Player extends Character {
 Player.createNewPlayer = function(username, callback){
     // Write Stats
     var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
+    var location = Player.setBaseLocationFromRace(Types.Races.HUMAN);
+    var statsReady, locationReady;
 
     DB.findOne(DB.USERS, {username: username}, function(result){
         stats.userId = result._id;
-        DB.writeToTable(DB.STATS, stats, callback);
+        location.userId = result._id;
+        DB.writeToTable(DB.STATS, stats, function(){
+            statsReady = true;
+        });
+        DB.writeToTable(DB.LOCATION, location, function(){
+            locationReady = true;
+        });
     });
+
+    var onReady = setInterval(function(){
+        if(statsReady && locationReady){
+            cancelInterval(onReady);
+            callback();
+        }
+    }, 10);
 }
 
 Player.setBaseStatsFromRace = function(race){
@@ -83,4 +131,9 @@ Player.setBaseStatsFromRace = function(race){
     stats.curHealth = stats.maxHealth = raceStats.health;
     stats.curSpeed = stats.maxSpeed = raceStats.speed;
     return stats;
+}
+
+Player.setBaseLocationFromRace = function(race){
+    var raceLocation = Races.getBaseLocation(race);
+    return raceLocation;
 }

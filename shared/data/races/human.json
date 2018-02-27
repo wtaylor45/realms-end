@@ -2,5 +2,8 @@
     "stats":{
         "health": 100,
         "speed": 150
-    }    
+    },
+    "map": "testmap",
+    "x": 32,
+    "y": 32    
 }

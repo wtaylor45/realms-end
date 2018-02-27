@@ -7,6 +7,7 @@ var database;
 
 DB.USERS = "re_users";
 DB.STATS = "re_userStats";
+DB.LOCATION = "re_location";
 
 DB.STATS_SCHEMA = {
     userId: "",
@@ -22,9 +23,13 @@ DB.ACCOUNT_SCHEMA = {
     salt: "",
     email: "",
     online: false,
+}
+
+DB.LOCATION_SCHEMA = {
+    userId: "",
     map: "",
-    x: "",
-    y: ""
+    x: 0,
+    y: 0
 }
 
 DB.init = function(url){
