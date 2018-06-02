@@ -23,3 +23,11 @@ Message.Login = class Login {
         return message;
     }
 }
+
+Message.Login.Reasons = {
+    CREDENTIALS_FAIL: "Invalid username or password.",
+    LOGGED_IN_FAIL: "This account is already logged in to the game.",
+    USERNAME_TAKEN_FAIL: "Username already in use.",
+    REGISTER_SUCCESS: "Account registered succesfully. Entering the realm...",
+    LOGIN_SUCCESS: "Successfully logged in. Entering the realm..."
+}

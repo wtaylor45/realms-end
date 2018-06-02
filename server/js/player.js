@@ -19,7 +19,8 @@ module.exports = Player = class Player extends Character {
         });
 
         this.onLoaded(function(){
-            var message = new Message.Login(self);
+            var message = new Message.Login(self, Message.Login.Reasons.LOGIN_SUCCESS);
+            Logger.debug("Emitting message", message)
             self.connection.emit(
                 message.type, 
                 message.serialize()
@@ -41,17 +42,18 @@ module.exports = Player = class Player extends Character {
 
         var onReady = setInterval(function(){
             if(statsReady && locationReady){
-                cancelInterval(onReady);
+                clearInterval(onReady);
                 self.initializeListeners();
             }
         }, 10);
+        this.loaded();
     }
 
     initializeStats(callback){
         var self = this;
         DB.findOne(DB.STATS, {userId: this.id}, function(result){
             if(!result){
-                Logger.warn("No stats for", self.name, "found. Creating their statistics...");
+                Logger.info("No stats for", self.name, "found. Creating their statistics...");
                 var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
                 stats.userId = self.id;
                 return DB.writeToTable(DB.STATS, stats, callback);
@@ -69,8 +71,8 @@ module.exports = Player = class Player extends Character {
         var self = this;
         DB.findOne(DB.LOCATION, {userId: this.id}, function(result){
             if(!result){
-                Logger.warn("No location found. Setting to base location...");
-                var location = Player.setBaseLocationFromRace();
+                Logger.info("No location found. Setting to base location...");
+                var location = Player.setBaseLocationFromRace(Types.Races.HUMAN);
                 location.userId = self.id;
                 return DB.writeToTable(DB.LOCATION, location, callback);
             }
@@ -78,13 +80,16 @@ module.exports = Player = class Player extends Character {
 
 
     }
-    
 
     initializeListeners(){
         var self = this;
         this.connection.on(Types.Messages.MOVE, function(data){
             self.onMove(data);
         });
+    }
+
+    loaded(){
+        if(this.loadCallback) this.loadCallback();
     }
 
     onLoaded(callback){
@@ -126,7 +131,7 @@ Player.createNewPlayer = function(username, callback){
 }
 
 Player.setBaseStatsFromRace = function(race){
-    var stats = DB.STATS_SCHEMA;
+    var stats = PlayerModel.STATS;
     var raceStats = Races.getBaseStats(race);
     stats.curHealth = stats.maxHealth = raceStats.health;
     stats.curSpeed = stats.maxSpeed = raceStats.speed;
@@ -134,6 +139,7 @@ Player.setBaseStatsFromRace = function(race){
 }
 
 Player.setBaseLocationFromRace = function(race){
+    Logger.debug(race);
     var raceLocation = Races.getBaseLocation(race);
     return raceLocation;
 }

@@ -9,6 +9,9 @@ module.exports = Character = class Character extends Entity {
         this.model = new CharacterModel();
     }
 
+    /**
+     * Return the basic state information of the character.
+     */
     getState(){
         var state = this.getBaseState();
         state.name = this.name;
@@ -16,6 +19,9 @@ module.exports = Character = class Character extends Entity {
         return state;
     }
 
+    /**
+     * @param {Object} stats            The stats to set as the current statistics of the character.
+     */
     setStats(stats){
         this.model.setStats(stats);
     }

@@ -3,7 +3,8 @@ var crypto = require('crypto'),
     DB = require('./db'),
     Logger = require('js-logger'),
     World = require('../world'),
-    Player = require('../player')
+    Player = require('../player'),
+    Message = require('../message')
 
 Account = {};
 
@@ -13,23 +14,21 @@ Account = {};
 Account.login = function(data, connection){
     Account.getUserInfo(data.username, function(result){
         if(!result){
-            Logger.log('No account with credentials found.');
-            connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."}); 
+            Logger.info(data.username, "attempted to log in with an incorrect username.")
+            connection.emit(Types.Messages.LOGIN, {success: false, reason: Message.Login.Reasons.CREDENTIALS_FAIL}); 
             return;
         }
         Account.encryptPassword(data.password, result.salt, function(hashResult){
             if(hashResult == result.password){
                 if(result.online){
-                    Logger.log('Account has already logged in.');
-                    connection.emit(Types.Messages.LOGIN, {success: false, reason: "Account is still logged in."}); 
+                    Logger.info(result.username, "attempted to log into the system, but is already online.");
+                    connection.emit(Types.Messages.LOGIN, {success: false, reason: Message.Login.Reasons.LOGGED_IN_FAIL}); 
                     return;
                 }
-                Logger.debug(data.username, "has successfully logged in.");
-                connection.emit(Types.Messages.LOGIN, {success: false, reason: "Login successful! Entering the realm...", complete: false}); 
-                World.addPlayerToOpenWorld(result, connection);
-                
+                Logger.info(data.username, "has successfully logged in.");
+                connection.emit(Types.Messages.LOGIN, {success: true, reason: Message.Login.Reasons.LOGIN_SUCCESS, complete: false}); 
+                World.addPlayerToOpenWorld(result, connection);                
             }else{
-                connection.emit(Types.Messages.LOGIN, {success: false, reason: "Invalid username or password."});
             }
         });
     });
@@ -38,8 +37,7 @@ Account.login = function(data, connection){
 Account.register = function(data, connection){
     Account.findUser(data.username, function(result){
         if(result){
-            connection.emit(Types.Messages.REGISTER, {"success": false, "reason": "Username already taken."});
-            Logger.debug("Username " + data.username + " already taken.");
+            connection.emit(Types.Messages.LOGIN, {success: false, reason: Message.Login.Reasons.USERNAME_TAKEN_FAIL}); 
             return;
         }
 
@@ -65,7 +63,7 @@ Account.registerUser = function(data, connection){
                     Account.login(unencryptedData, connection);
                 });
             });
-            connection.emit(Types.Messages.REGISTER, {success: true, reason: "Account successfully created.\nLogging in...", complete: false});
+            connection.emit(Types.Messages.REGISTER, {success: true, reason: Message.Login.Reasons.REGISTER_SUCCESS, complete: false});
         });
     });
 }

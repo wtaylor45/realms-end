@@ -9,6 +9,14 @@ DB.USERS = "re_users";
 DB.STATS = "re_userStats";
 DB.LOCATION = "re_location";
 
+/**
+ * PK _id
+ * FK userId (re_user._id)
+ * 
+ * Every stat has a current and a max. Current is what the stat is currently at,
+ * while current is what the current level of that stat is (e.g. affected by slowness, 
+ * speed is currently 1, max 5).
+ */
 DB.STATS_SCHEMA = {
     userId: "",
     maxHealth: 0,
@@ -17,6 +25,11 @@ DB.STATS_SCHEMA = {
     curSpeed: 0
 }
 
+/**
+ * PK _id
+ * 
+ * Stores usernames, hashed passwords, and salt for login purposes.
+ */
 DB.ACCOUNT_SCHEMA = {
     username: "",
     password: "",
@@ -25,6 +38,12 @@ DB.ACCOUNT_SCHEMA = {
     online: false,
 }
 
+/**
+ * PK _id
+ * FK userId (re_user)
+ * 
+ * Where the user currently is in the world. Updated on log out only.
+ */
 DB.LOCATION_SCHEMA = {
     userId: "",
     map: "",
@@ -32,17 +51,31 @@ DB.LOCATION_SCHEMA = {
     y: 0
 }
 
+/**
+ * 
+ * @param {String} url          The URL of the database.
+ * 
+ * Establish a connection the database.
+ */
 DB.init = function(url){
-    console.log('Connecting to DB')
+    Logger.info("Attempting to connect to the database @ "+url+".");
     database = mongojs(url);
 
     if(!database){
         throw "Could not establish connection with the database."
     }
 
-    console.log("Connected to database...");
+    Logger.info("Connection established with MongoDB!")
 }
 
+/**
+ * 
+ * @param {String} table            The table to write to.
+ * @param {Object} value            The value to write to the table. 
+ * @param {Object} callback         The function to run once the write operation has completed. 
+ * 
+ * Write a given value or set of values to the given table.
+ */
 DB.writeToTable = function(table, value, callback){
     var collection = database.collection(table);
     
@@ -58,6 +91,12 @@ DB.writeToTable = function(table, value, callback){
     collection.insert(value, callback);
 }
 
+/**
+ * 
+ * @param {String} table            The table to run the query on.
+ * @param {Object} query            The MongoDB formatted query to run. 
+ * @param {*} callback              The function to run ocne the query has completed.
+ */
 DB.queryTable = function(table, query, callback){
     var collection = database.collection(table);
     var result;

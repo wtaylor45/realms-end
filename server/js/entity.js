@@ -11,6 +11,10 @@ module.exports = Entity = class Entity {
         this.y = y;
     }
 
+    /**
+     * Get the barebones information that makes up the entity. Subclasses should call this in their
+     * getState() methods.
+     */
     getBaseState(){
         return {
             id: this.id,
@@ -19,6 +23,4 @@ module.exports = Entity = class Entity {
             y: this.y
         }
     }
-
-
 }

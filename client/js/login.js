@@ -60,13 +60,13 @@ Login.in = function(){
     $('#submit-login').prop("disabled", true);
 
     Socket.emit(Types.Messages.LOGIN, data);
-
     $('#login-message').hide();
 
     LAST_CLICK = Date.now();
 }
 
 Login.handleResponse = function(data){
+    console.log(data)
     if(!data.success){
         $('#login-message').html(formatMessage(data.reason, "failed"));
         $('#login-message').show();

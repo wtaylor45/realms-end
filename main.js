@@ -15,40 +15,28 @@ function main(options){
     const app = express(); // The express file server app
     var http = require('http').Server(app);
 
+    const PORT = options.port || 2000; // the port the local server will run on 
     var io = require('socket.io')(http);
     var World = require('./server/js/world');
     var uuidV1 = require('uuid/v1');
     var CONNECTIONS = [];
 
+    // STEP 0: Initialize the logger.
+    // Logger level set in config.json
+    initializeLogger(options.debugLevel);
+    Logger.time("Total startup time");
+
+    // STEP 1: Establish connection with the database.
+    // TODO: Allow for use of local test DB when offline
+    Logger.time('Database initialization');
     DB.init(options.dbURL);
-
-    const PORT = options.port || 2000; // the port the local server will run on 
-
-    Logger.useDefaults();
-
-    switch(options.debugLevel){
-        case 'info':
-            Logger.setLevel(Logger.INFO);
-            break;
-        case 'debug':
-            Logger.setLevel(Logger.DEBUG);
-            break;
-        case 'warn':
-            Logger.setLevel(Logger.WARN);
-            break;
-        case 'error':
-            Logger.setLevel(Logger.ERROR);
-            break;
-        default:
-            Logger.setLevel(Logger.INFO);
-            break;
-    }
-
-    Logger.info('Starting file server...');
+    Logger.timeEnd('Database initialization');
 
     /*****************************/
     /*        FILE SERVER        */
     /*****************************/
+    Logger.time('File server intialization')
+    Logger.info('Starting file server...');
 
     app.get('/', function(req, res){
         res.sendFile(__dirname + '/client/views/index.html');
@@ -57,13 +45,12 @@ function main(options){
 
     http.listen(PORT); // Start the file server
 
-    Logger.info('SUCCESS')
+    Logger.info('File server successfully started!')
+    Logger.timeEnd('File server intialization')
 
     /*****************************/
     /*        GAME SERVER        */
     /*****************************/
-
-    Logger.info('-----------------------');
     Logger.info('Starting game server...');
     Logger.time('Game server startup time');
 
@@ -83,8 +70,10 @@ function main(options){
 
     World.createWorlds(options.numWorlds, options.playersPerWorld, io.sockets);
 
+    Logger.info("Game server succesfully started!");
     Logger.timeEnd('Game server startup time');
-    Logger.info('-----------------------');
+    Logger.timeEnd('Total startup time');
+    Logger.info("Startup completed! Waiting for connections.")
 }
 
 function getConfig(path, callback){
@@ -97,6 +86,33 @@ function getConfig(path, callback){
             callback(json);
         }
     })
+}
+
+function initializeLogger(level){
+    switch(level){
+        case 'info':
+            Logger.setLevel(Logger.INFO);
+            break;
+        case 'debug':
+            Logger.setLevel(Logger.DEBUG);
+            break;
+        case 'warn':
+            Logger.setLevel(Logger.WARN);
+            break;
+        case 'error':
+            Logger.setLevel(Logger.ERROR);
+            break;
+        default:
+            Logger.setLevel(Logger.INFO);
+            break;
+    }
+    Logger.setHandler(Logger.createDefaultHandler({
+        formatter: function(messages, context) {
+            var level = context.level.name;
+            messages.unshift("["+new Date().toUTCString()+"] "+level+":");
+        }
+    }));
+    Logger.info("Logger set to",JSON.stringify(Logger.getLevel())+".");
 }
 
 var configPath = "./server/config.json";
