@@ -5,10 +5,9 @@ var Logger = require('js-logger'),
 module.exports = Entity = class Entity {
     constructor(id, x, y, map){
         this.id = id;
-        this.model = new EntityModel(this);
-        this.map = map;
         this.x = x;
         this.y = y;
+        this.map = map;
     }
 
     /**
@@ -22,5 +21,13 @@ module.exports = Entity = class Entity {
             x: this.x,
             y: this.y
         }
+    }
+
+    setPosition(x, y){
+        EntityModel.setPosition(this, x, y);
+    }
+
+    setLocation(x,y, map){
+        EntityModel.setLocation(this, x, y, map);
     }
 }

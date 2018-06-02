@@ -12,7 +12,6 @@ module.exports = Player = class Player extends Character {
         var self = this;
         this.connection = connection;
         this.worldServer = worldServer;
-        this.model = new PlayerModel(this);
 
         this.connection.on('disconnect', function(){
             self.disconnectCallback();
@@ -20,7 +19,6 @@ module.exports = Player = class Player extends Character {
 
         this.onLoaded(function(){
             var message = new Message.Login(self, Message.Login.Reasons.LOGIN_SUCCESS);
-            Logger.debug("Emitting message", message)
             self.connection.emit(
                 message.type, 
                 message.serialize()
@@ -52,17 +50,20 @@ module.exports = Player = class Player extends Character {
     initializeStats(callback){
         var self = this;
         DB.findOne(DB.STATS, {userId: this.id}, function(result){
-            if(!result){
-                Logger.info("No stats for", self.name, "found. Creating their statistics...");
-                var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
-                stats.userId = self.id;
-                return DB.writeToTable(DB.STATS, stats, callback);
-            }
-
+            // Prune the result object
             delete result.userId;
             delete result._id;
 
-            self.setStats(result);
+            var stats = result;
+            
+            if(!stats){
+                Logger.info("No stats for", self.name, "found. Creating their statistics...");
+                var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
+                stats.userId = self.id;
+                DB.writeToTable(DB.STATS, stats, callback);
+            }
+
+            self.setStats(stats);
             if(callback) callback();
         });
     }
@@ -70,15 +71,18 @@ module.exports = Player = class Player extends Character {
     initializeLocation(callback){
         var self = this;
         DB.findOne(DB.LOCATION, {userId: this.id}, function(result){
-            if(!result){
-                Logger.info("No location found. Setting to base location...");
-                var location = Player.setBaseLocationFromRace(Types.Races.HUMAN);
+            var location = result;
+            if(!location){
+                Logger.info("No location found for "+this.name+". Setting to base location...");
+                location = Player.setBaseLocationFromRace(Types.Races.HUMAN);
                 location.userId = self.id;
-                return DB.writeToTable(DB.LOCATION, location, callback);
+                DB.writeToTable(DB.LOCATION, location, callback);
             }
+
+            self.setPosition(result.x, result.y);
+            Logger.debug(self.model)
+            if(callback) callback();
         });
-
-
     }
 
     initializeListeners(){
@@ -101,7 +105,7 @@ module.exports = Player = class Player extends Character {
     }
 
     onMove(data){
-        this.model.move(data.vector, data.dt);
+        PlayerMode.move(this, data.vector, data.dt);
     }
 }
 

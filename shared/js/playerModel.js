@@ -1,15 +1,10 @@
 
 
-module.exports = PlayerModel = class PlayerModel extends CharacterModel {
-    constructor(player){
-        super(player);
-        this.player = player;
-    }
+module.exports = PlayerModel = {};
 
-    move(vector, dt){
-        var x = this.player.x+this.player.stats.curSpeed*dt*vector[0];
-        var y = this.player.y+this.player.stats.curSpeed*dt*vector[1];
-        
-        this.setPosition(x, y);
-    }
+PlayerModel.move = function(player, vector, dt){
+    var x = player.x+player.stats.curSpeed*dt*vector[0];
+    var y = player.y+player.stats.curSpeed*dt*vector[1];
+    
+    this.setPosition(x, y);
 }

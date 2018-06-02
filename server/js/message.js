@@ -1,4 +1,5 @@
-var Types = require('../../shared/js/types');
+var Types = require('../../shared/js/types'),
+    Logger = require('js-logger')
 
 module.exports = Message = {};
 

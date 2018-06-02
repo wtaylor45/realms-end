@@ -6,7 +6,7 @@ module.exports = Character = class Character extends Entity {
     constructor(id, name, x, y, map){
         super(id, x, y, map);
         this.name = name;
-        this.model = new CharacterModel();
+        this.stats = CharacterModel.STATS_SCHEMA;
     }
 
     /**
@@ -23,11 +23,10 @@ module.exports = Character = class Character extends Entity {
      * @param {Object} stats            The stats to set as the current statistics of the character.
      */
     setStats(stats){
-        this.model.setStats(stats);
+        CharacterModel.setStats(this, stats);
     }
 
     getStats(){
-        return this.model.getStats();
-    }
-       
+        CharacterModel.getStats(this);
+    }  
 }
