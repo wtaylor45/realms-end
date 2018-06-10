@@ -3,11 +3,11 @@ var Logger = require('js-logger'),
 
 
 module.exports = Entity = class Entity {
-    constructor(id, x, y, map){
+    constructor(id, x, y, mapName){
         this.id = id;
         this.x = x;
         this.y = y;
-        this.map = map;
+        this.mapName = mapName;
     }
 
     /**

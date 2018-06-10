@@ -4,11 +4,12 @@ var Character = require('./character'),
     Message = require('./message'),
     Types = require('../../shared/js/types'),
     Races = require('../../shared/js/races'),
-    PlayerModel = require('../../shared/js/playerModel')
+    PlayerModel = require('../../shared/js/playerModel'),
+    _ = require('underscore')
 
 module.exports = Player = class Player extends Character {
-    constructor(id, username, x, y, map, connection, worldServer){
-        super(id, username, x, y, map);
+    constructor(id, username, x, y, mapName, connection, worldServer){
+        super(id, username, x, y, mapName);
         var self = this;
         this.connection = connection;
         this.worldServer = worldServer;
@@ -30,21 +31,25 @@ module.exports = Player = class Player extends Character {
 
     init(){
         var self=this;
-        var statsReady, locationReady;
+        var readyFlags = {
+            statsReady: false,
+            locationReady: false
+        }
         this.initializeStats(function(){
-            statsReady = true;
+            readyFlags.statsReady = true;
         });
         this.initializeLocation(function(){
-            locationReady = true;
+            readyFlags.locationReady = true;
         });
 
+        // Continuosly check for all ready flags to be set to true
         var onReady = setInterval(function(){
-            if(statsReady && locationReady){
+            if(!_.contains(readyFlags, false)){
                 clearInterval(onReady);
                 self.initializeListeners();
+                self.loaded();
             }
         }, 10);
-        this.loaded();
     }
 
     initializeStats(callback){
@@ -53,34 +58,31 @@ module.exports = Player = class Player extends Character {
             // Prune the result object
             delete result.userId;
             delete result._id;
-
-            var stats = result;
             
-            if(!stats){
+            if(!result){
                 Logger.info("No stats for", self.name, "found. Creating their statistics...");
-                var stats = Player.setBaseStatsFromRace(Types.Races.HUMAN);
-                stats.userId = self.id;
-                DB.writeToTable(DB.STATS, stats, callback);
+                result = Player.setBaseStatsFromRace(Types.Races.HUMAN);
+                result.userId = self.id;
+                DB.writeToTable(DB.STATS, result);
             }
 
-            self.setStats(stats);
+            self.setStats(result);
             if(callback) callback();
         });
     }
 
     initializeLocation(callback){
         var self = this;
+        // Get the users location from the database
         DB.findOne(DB.LOCATION, {userId: this.id}, function(result){
-            var location = result;
-            if(!location){
-                Logger.info("No location found for "+this.name+". Setting to base location...");
-                location = Player.setBaseLocationFromRace(Types.Races.HUMAN);
-                location.userId = self.id;
-                DB.writeToTable(DB.LOCATION, location, callback);
+            if(!result){
+                Logger.warn("No location found for "+self.name+". Setting to base location for this users race ("+Types.Races.HUMAN+").");
+                result = Player.setBaseLocationFromRace(Types.Races.HUMAN);
+                result.userId = self.id;
+                DB.writeToTable(DB.LOCATION, result);
             }
 
-            self.setPosition(result.x, result.y);
-            Logger.debug(self.model)
+            self.setLocation(result.x, result.y, result.map);
             if(callback) callback();
         });
     }
@@ -143,7 +145,6 @@ Player.setBaseStatsFromRace = function(race){
 }
 
 Player.setBaseLocationFromRace = function(race){
-    Logger.debug(race);
     var raceLocation = Races.getBaseLocation(race);
     return raceLocation;
 }

@@ -3,8 +3,8 @@ var Entity = require('./entity'),
     CharacterModel = require('../../shared/js/characterModel')
 
 module.exports = Character = class Character extends Entity {
-    constructor(id, name, x, y, map){
-        super(id, x, y, map);
+    constructor(id, name, x, y, mapName){
+        super(id, x, y, mapName);
         this.name = name;
         this.stats = CharacterModel.STATS_SCHEMA;
     }

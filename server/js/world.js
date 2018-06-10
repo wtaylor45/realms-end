@@ -7,7 +7,8 @@ var Logger = require('js-logger'),
     Player = require('./player'),
     DB = require('./private/db'),
     Types = require('../../shared/js/types.js'),
-    Message = require('./message')
+    Message = require('./message'),
+    Types = require('../../shared/js/entityModel.js')
 
 var worlds = [];
 
