@@ -8,10 +8,9 @@ var Types = require('../../shared/js/types'),
     _ = require('underscore')
     
 module.exports = Player = class Player extends Character {
-    constructor(id, name, x, y, map){
+    constructor(id, name, x, y, mapName){
         super(id, name, x, y, Types.Sprites.PLAYER0);
-        this.map = new Map(map);
-        this.model = new PlayerModel(this);
+        this.map = new Map(mapName);
         Input.init();
     }
 
@@ -24,7 +23,8 @@ module.exports = Player = class Player extends Character {
         var isStationary = vector[0] == 0 && vector[1] == 0;
 
         if(!isStationary){
-            this.model.move(vector, dt); 
+            var position = PlayerModel.move(this, vector, dt); 
+            this.setPosition(position.x, position.y);
             new Message.Move(this, vector, dt).send();
         }
     }

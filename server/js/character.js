@@ -27,6 +27,6 @@ module.exports = Character = class Character extends Entity {
     }
 
     getStats(){
-        CharacterModel.getStats(this);
+        return CharacterModel.getStats(this);
     }  
 }

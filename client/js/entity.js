@@ -7,10 +7,17 @@ module.exports = Entity = class Entity {
         this.x = x;
         this.y = y;
         this.sprite = new Sprite(sprite);
-        this.model = new EntityModel(this);
     }
 
     getSprite(){
         return this.sprite.Image;
+    }
+
+    setPosition(x, y){
+        EntityModel.setPosition(this, x, y);
+    }
+
+    setLocation(x, y, mapName){
+        EntityModel.setLocation(this, x, y, mapName);
     }
 }

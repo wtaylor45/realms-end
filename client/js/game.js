@@ -41,8 +41,8 @@ module.exports = Game = class Game{
 
   createPlayer(data){
     console.log(data);
-    var player = new Player(data.id, data.name, data.x, data.y, data.map);
-    player.model.setStats(data.stats);
+    var player = new Player(data.id, data.name, data.x, data.y, data.mapName);
+    player.setStats(data.stats);
     return player;
   }
 }

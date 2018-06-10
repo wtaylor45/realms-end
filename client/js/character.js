@@ -7,11 +7,10 @@ module.exports = Character = class Character extends Entity {
     constructor(id, name, x, y, sprite){
         super(id, x,y,sprite);
         this.name = name;
-        this.model = new CharacterModel(this);
-        this.stats = {}
+        this.stats = CharacterModel.STATS_SCHEMA
     }
 
     setStats(stats){
-        this.stats = stats;
+        CharacterModel.setStats(this, stats);
     }
 }

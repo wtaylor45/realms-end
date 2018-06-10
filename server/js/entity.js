@@ -17,7 +17,7 @@ module.exports = Entity = class Entity {
     getBaseState(){
         return {
             id: this.id,
-            map: this.map,
+            mapName: this.mapName,
             x: this.x,
             y: this.y
         }

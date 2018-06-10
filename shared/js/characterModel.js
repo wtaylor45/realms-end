@@ -14,6 +14,7 @@ CharacterModel.setStats = function(character, stats){
         throw "The given stats object does not match the stats schema.";
     }
     character.stats = stats;
+    Logger.info(character.name, "had stats updated to:", character.stats);
 }
 
 CharacterModel.STATS = {
