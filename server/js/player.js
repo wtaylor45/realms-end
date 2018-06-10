@@ -107,7 +107,8 @@ module.exports = Player = class Player extends Character {
     }
 
     onMove(data){
-        PlayerMode.move(this, data.vector, data.dt);
+        var position = PlayerModel.move(this, data.vector, data.dt);
+        this.setPosition(position.x, position.y);
     }
 }
 
