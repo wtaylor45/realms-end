@@ -24,7 +24,7 @@ module.exports = Player = class Player extends Character {
 
         if(!isStationary){
             var position = PlayerModel.move(this, vector, dt); 
-            this.setPosition(position.x, position.y);
+            this.setPosition(position[0], position[1]);
             new Message.Move(this, vector, dt).send();
         }
     }
