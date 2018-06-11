@@ -32,3 +32,34 @@ Message.Login.Reasons = {
     REGISTER_SUCCESS: "Account registered succesfully. Entering the realm...",
     LOGIN_SUCCESS: "Successfully logged in. Entering the realm..."
 }
+
+Message.Move = class Move {
+    constructor(player, sequenceNumber){
+        this.player = player;
+        this.x = player.x;
+        this.y = player.y;
+        this.sequenceNumber = sequenceNumber;
+        this.type = Types.Messages.MOVE;
+    }
+
+    serialize(){
+        var message = {};
+        message.x = this.x;
+        message.y = this.y;
+        message.sequenceNumber = this.sequenceNumber;
+        return message;
+    }
+}
+
+Message.Update = class Update {
+    constructor(messages){
+        this.messages = messages;
+        this.type = Types.Messages.UPDATE;
+    }
+
+    serialize(){
+        var message = {};
+        message.messages = this.messages;
+        return message;
+    }
+}

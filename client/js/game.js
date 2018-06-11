@@ -1,5 +1,6 @@
 var Renderer = require('./renderer'),
-    Player = require('./player')
+    Player = require('./player'),
+    Socket = require('./socket')
   
 var FPS = 1/60; // 60hz
 
@@ -13,6 +14,7 @@ module.exports = Game = class Game{
     this.entities = {}; // All entities currently in player's area
     this.mobs = {}; // All mobs in player's area
     this.players = {}; // All players in player's area
+    this.messageQueue = [];
 
     var readyInterval = setInterval(function(){
       if(self.player.sprite.isLoaded && self.player.map.isLoaded){
@@ -20,6 +22,10 @@ module.exports = Game = class Game{
         self.start();
       }
     }, 10);
+
+    Socket.on(Types.Messages.UPDATE, function(message){
+      this.messageQueue.push(message.messages);
+    });
   }
 
   start(){
@@ -40,7 +46,6 @@ module.exports = Game = class Game{
   }
 
   createPlayer(data){
-    console.log(data);
     var player = new Player(data.id, data.name, data.x, data.y, data.mapName);
     player.setStats(data.stats);
     return player;

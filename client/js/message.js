@@ -13,6 +13,7 @@ Message.Move = class MoveMessage {
         var message = {
             time: Date.now(),
             id: this.player.id,
+            sequence: this.player.latestInputSequenceNumber,
             vector: this.movementVector,
             dt: this.dt
         }

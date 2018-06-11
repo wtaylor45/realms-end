@@ -106,9 +106,21 @@ module.exports = Player = class Player extends Character {
         this.disconnectCallback = callback;
     }
 
+    broadcast(message){
+        if(this.broadcastCallback){
+            this.broadcastCallback(message);
+        }
+    }
+
+    onBroadcast(callback){
+        this.broadcastCallback = callback;
+    }
+
     onMove(data){
         var position = PlayerModel.move(this, data.vector, data.dt);
         this.setPosition(position[0], position[1]);
+        var message = new Message.Move(this, data.sequenceNumber);
+        this.broadcast(message);
     }
 }
 

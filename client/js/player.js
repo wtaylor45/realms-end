@@ -12,6 +12,8 @@ module.exports = Player = class Player extends Character {
         super(id, name, x, y, Types.Sprites.PLAYER0);
         this.map = new Map(mapName);
         Input.init();
+        // Use this to perform reconciliation
+        this.latestInputSeq = 0;
     }
 
     update(dt){

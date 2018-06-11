@@ -30,4 +30,13 @@ module.exports = Entity = class Entity {
     setLocation(x,y, map){
         EntityModel.setLocation(this, x, y, map);
     }
+
+    getZoneBounds(){
+        return {
+            leftX: this.x-500,
+            topY: this.y-500,
+            rightX: this.x+500,
+            bottomY: this.y+500
+        }
+    }
 }

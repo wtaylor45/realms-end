@@ -26,7 +26,7 @@ module.exports = World = class World{
         this.entities = [];
 
         // The message queue for each player
-        this.outgoingMessages = [];
+        this.outgoingMessages = {};
         
         this.onPlayerConnect(function(player){
             self.incrementPlayerCount();
@@ -48,7 +48,11 @@ module.exports = World = class World{
                     self.playerCount+"/"+self.maxPlayers);
             });
 
-            self.outgoingMessages[player.id] = {};
+            player.onBroadcast(function(message){
+                self.broadcastMessageToZone(player, message.serialize());
+            });
+
+            self.outgoingMessages[player.id] = [];
         });
     }
 
@@ -91,6 +95,19 @@ module.exports = World = class World{
         delete this.outgoingMessages[player.id];
 
         this.removeEntity(player);
+    }
+
+    broadcastMessageToZone(entity, message){
+        //var playersInZone = this.getPlayersWithinBounds(entity.getZoneBounds());
+        var playersInZone = this.players;
+        var self = this;
+        _.forEach(playersInZone, function(player){
+            self.addMessageToOutbox(player, message);
+        });
+    }
+
+    addMessageToOutbox(player, message){
+        this.outgoingMessages[player.id].push(message);
     }
 }
 
